@@ -5,6 +5,8 @@
         public App()
         {
             InitializeComponent();
+            // Força o tema claro
+            UserAppTheme = AppTheme.Light;
             MainPage = new MainPage();
         }
     }

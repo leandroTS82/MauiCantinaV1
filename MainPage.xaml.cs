@@ -1,9 +1,5 @@
-﻿using CantinaV1.Models;
-using CantinaV1.Data;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
+﻿using CantinaV1.Data;
+using CantinaV1.Models;
 
 namespace CantinaV1
 {
@@ -44,6 +40,12 @@ namespace CantinaV1
             }
 
             await CarregarProdutos();
+        }
+        private async void OnLimparProdutosClicked(object sender, EventArgs e)
+        {
+            await _database.DeleteAllProdutosAsync(); // Limpa a tabela
+            listProdutos.ItemsSource = await _database.GetProdutosAsync(); // Atualiza a lista
+            labelTotal.Text = "Total: R$0,00"; // Reseta o total
         }
 
         private void AtualizarTotal()
