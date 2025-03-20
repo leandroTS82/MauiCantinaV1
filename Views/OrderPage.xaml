@@ -4,9 +4,6 @@
              x:Class="CantinaV1.Views.OrderPage"
              Title="OrderPage">
     <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        <Label Text="Pedidos" FontSize="24" HorizontalOptions="Center"/>
     </VerticalStackLayout>
 </ContentPage>

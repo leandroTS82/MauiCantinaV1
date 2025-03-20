@@ -5,7 +5,7 @@
              Title="ProductsPage">
 
     <VerticalStackLayout Padding="20">
-        <Label Text="Cantina da Igreja" FontSize="24" HorizontalOptions="Center"/>
+        <Label Text="Produtos" FontSize="24" HorizontalOptions="Center"/>
 
         <ListView x:Name="listProdutos" >
             <ListView.ItemTemplate>
