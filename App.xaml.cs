@@ -1,4 +1,6 @@
-﻿namespace CantinaV1
+﻿using CantinaV1.Views;
+
+namespace CantinaV1
 {
     public partial class App : Application
     {
@@ -7,7 +9,7 @@
             InitializeComponent();
             // Força o tema claro
             UserAppTheme = AppTheme.Light;
-            MainPage = new MainPage();
+            MainPage = new ProductsPage();
         }
     }
 }
