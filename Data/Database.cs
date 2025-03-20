@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿// Database.cs
+using SQLite;
 using CantinaV1.Models;
 
 namespace CantinaV1.Data
@@ -11,6 +12,7 @@ namespace CantinaV1.Data
         {
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<Produto>().Wait();
+            _database.CreateTableAsync<Pedido>().Wait();
         }
 
         public Task<List<Produto>> GetProdutosAsync()
@@ -35,14 +37,15 @@ namespace CantinaV1.Data
             }
 
         }
-        public Task<int> DeleteAllProdutosAsync()
-        {
-            return _database.DeleteAllAsync<Produto>();
-        }
 
         public Task<int> SaveProdutoAsync(Produto produto)
         {
             return _database.InsertAsync(produto);
+        }
+
+        public Task<int> DeleteAllProdutosAsync()
+        {
+            return _database.DeleteAllAsync<Produto>();
         }
 
         public Task<int> UpdateProdutoAsync(Produto produto)
@@ -50,9 +53,14 @@ namespace CantinaV1.Data
             return _database.UpdateAsync(produto);
         }
 
-        public Task<int> DeleteProdutoAsync(Produto produto)
+        public Task<List<Pedido>> GetPedidosAsync()
         {
-            return _database.DeleteAsync(produto);
+            return _database.Table<Pedido>().ToListAsync();
+        }
+
+        public Task<int> SavePedidoAsync(Pedido pedido)
+        {
+            return _database.InsertAsync(pedido);
         }
     }
 }
