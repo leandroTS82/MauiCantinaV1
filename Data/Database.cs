@@ -13,6 +13,7 @@ namespace CantinaV1.Data
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<Product>().Wait();
             _database.CreateTableAsync<Order>().Wait();
+            _database.CreateTableAsync<OrderItem>().Wait();
         }
 
         public Task<List<Product>> GetProdutosAsync()
@@ -23,12 +24,12 @@ namespace CantinaV1.Data
         public async Task InicializarProdutosAsync()
         {
             var produtos = await GetProdutosAsync();
-            _database.DeleteAllAsync<Product>();
-            var produtosIniciais = new List<Product>
+            _database.DeleteAllAsync<OrderItem>();
+            var produtosIniciais = new List<OrderItem>
                 {
-                    new Product { Nome = "Café", Preco = 1.00m, Quantidade = 0 },
-                    new Product { Nome = "Pão de Queijo", Preco = 5.00m, Quantidade = 0 },
-                    new Product { Nome = "Pão de batata", Preco = 7.00m, Quantidade = 0 }
+                    new OrderItem { ProductName = "Café", Price = 1.00m, Quantity = 0 },
+                    new OrderItem { ProductName = "Pão de Queijo", Price = 5.00m, Quantity = 0 },
+                    new OrderItem { ProductName = "Pão de batata", Price = 7.00m, Quantity = 0 }
                 };
 
             foreach (var produto in produtosIniciais)

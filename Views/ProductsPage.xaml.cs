@@ -25,31 +25,43 @@ public partial class ProductsPage : ContentPage
     {
         _produtos = await _database.GetProdutosAsync();
         listProdutos.ItemsSource = _produtos;
-        AtualizarTotal();
     }
 
-    private async void OnAdicionarProdutoClicked(object sender, EventArgs e)
+    private async void OnSalvarProdutoClicked(object sender, EventArgs e)
     {
-        foreach (var produto in _produtos)
+        // Pega os valores dos campos de entrada
+        string nomeProduto = entryNome.Text;
+        string precoProduto = entryPreco.Text;
+
+        // Valida se os campos não estão vazios
+        if (string.IsNullOrEmpty(nomeProduto) || string.IsNullOrEmpty(precoProduto))
         {
-            if (produto.Quantidade > 0)
-            {
-                await _database.UpdateProdutoAsync(produto);
-            }
+            // Aqui você pode mostrar uma mensagem de erro para o usuário, caso necessário
+            await DisplayAlert("Erro", "Preencha todos os campos", "OK");
+            return;
         }
 
+        // Cria um novo objeto Product
+        var produto = new Product
+        {
+            Name = nomeProduto,
+            Price = decimal.Parse(precoProduto) // Converte o preço para decimal
+        };
+
+        // Salva o produto no banco de dados
+        await _database.SaveProdutoAsync(produto);
+
+        // Limpa os campos do formulário
+        entryNome.Text = string.Empty;
+        entryPreco.Text = string.Empty;
+
+        // Carrega os produtos atualizados
         await CarregarProdutos();
     }
     private async void OnLimparProdutosClicked(object sender, EventArgs e)
     {
         await _database.DeleteAllProdutosAsync(); // Limpa a tabela
         listProdutos.ItemsSource = await _database.GetProdutosAsync(); // Atualiza a lista
-        labelTotal.Text = "Total: R$0,00"; // Reseta o total
-    }
 
-    private void AtualizarTotal()
-    {
-        decimal total = _produtos.Sum(p => p.Total);
-        labelTotal.Text = $"Total: R${total:N2}";
     }
 }

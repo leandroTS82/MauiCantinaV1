@@ -6,9 +6,7 @@ namespace CantinaV1.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string Nome { get; set; }
-        public decimal Preco { get; set; }
-        public int Quantidade { get; set; }
-        public decimal Total => Preco * Quantidade;
+        public string Name { get; set; }
+        public decimal Price { get; set; }
     }
 }

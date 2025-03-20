@@ -3,7 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CantinaV1.Views.OrderPage"
              Title="OrderPage">
-    <VerticalStackLayout>
+    <VerticalStackLayout Padding="20">
         <Label Text="Pedidos" FontSize="24" HorizontalOptions="Center"/>
+
+        <ListView x:Name="listProdutos" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="5">
+                            <Label Text="{Binding Name}" WidthRequest="150"/>
+                            <Entry Text="{Binding Price, StringFormat='R${0:N2}'}" Keyboard="Numeric" WidthRequest="80"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        
+        <Label x:Name="labelTotal" Text="Total: R$0,00" FontSize="18" HorizontalOptions="Center"/>
+        
+
     </VerticalStackLayout>
 </ContentPage>
