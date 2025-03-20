@@ -1,43 +1,54 @@
 ﻿using CantinaV1.Models;
 using CantinaV1.Data;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System;
 
 namespace CantinaV1
 {
     public partial class MainPage : ContentPage
     {
-        private Database _database;
+        private readonly Database _database;
+        private List<Produto> _produtos;
 
         public MainPage()
         {
             InitializeComponent();
             string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "cantina.db3");
             _database = new Database(dbPath);
-            CarregarProdutos();
+            Inicializar();
         }
 
-        private async void CarregarProdutos()
+        private async void Inicializar()
         {
-            var produtos = await _database.GetProdutosAsync();
-            listProdutos.ItemsSource = produtos;
-            AtualizarTotal(produtos);
+            await _database.InicializarProdutosAsync();
+            await CarregarProdutos();
+        }
+
+        private async Task CarregarProdutos()
+        {
+            _produtos = await _database.GetProdutosAsync();
+            listProdutos.ItemsSource = _produtos;
+            AtualizarTotal();
         }
 
         private async void OnAdicionarProdutoClicked(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(entryNome.Text) &&
-                decimal.TryParse(entryPreco.Text, out decimal preco) &&
-                int.TryParse(entryQuantidade.Text, out int quantidade))
+            foreach (var produto in _produtos)
             {
-                var produto = new Produto { Nome = entryNome.Text, Preco = preco, Quantidade = quantidade };
-                await _database.SaveProdutoAsync(produto);
-                entryNome.Text = entryPreco.Text = entryQuantidade.Text = "";
-                CarregarProdutos();
+                if (produto.Quantidade > 0)
+                {
+                    await _database.UpdateProdutoAsync(produto);
+                }
             }
+
+            await CarregarProdutos();
         }
 
-        private void AtualizarTotal(List<Produto> produtos)
+        private void AtualizarTotal()
         {
-            decimal total = produtos.Sum(p => p.Total);
+            decimal total = _produtos.Sum(p => p.Total);
             labelTotal.Text = $"Total: R${total:N2}";
         }
     }

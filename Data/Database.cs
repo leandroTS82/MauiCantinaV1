@@ -18,9 +18,33 @@ namespace CantinaV1.Data
             return _database.Table<Produto>().ToListAsync();
         }
 
+        public async Task InicializarProdutosAsync()
+        {
+            var produtos = await GetProdutosAsync();
+            if (!produtos.Any()) // Adiciona apenas se o banco estiver vazio
+            {
+                var produtosIniciais = new List<Produto>
+                {
+                    new Produto { Nome = "Café", Preco = 1.00m, Quantidade = 0 },
+                    new Produto { Nome = "Pão de Queijo", Preco = 5.00m, Quantidade = 0 },
+                    new Produto { Nome = "Pão de batata", Preco = 7.00m, Quantidade = 0 }
+                };
+
+                foreach (var produto in produtosIniciais)
+                {
+                    await _database.InsertAsync(produto);
+                }
+            }
+        }
+
         public Task<int> SaveProdutoAsync(Produto produto)
         {
             return _database.InsertAsync(produto);
+        }
+
+        public Task<int> UpdateProdutoAsync(Produto produto)
+        {
+            return _database.UpdateAsync(produto);
         }
 
         public Task<int> DeleteProdutoAsync(Produto produto)

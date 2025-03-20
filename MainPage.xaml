@@ -5,20 +5,22 @@
     <VerticalStackLayout Padding="20">
         <Label Text="Cantina da Igreja" FontSize="24" HorizontalOptions="Center"/>
 
-        <Entry x:Name="entryNome" Placeholder="Nome do Produto"/>
-        <Entry x:Name="entryPreco" Placeholder="Preço" Keyboard="Numeric"/>
-        <Entry x:Name="entryQuantidade" Placeholder="Quantidade" Keyboard="Numeric"/>
-
-        <Button Text="Adicionar Produto" Clicked="OnAdicionarProdutoClicked"/>
-
-        <ListView x:Name="listProdutos">
+        <ListView x:Name="listProdutos" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Nome}" Detail="{Binding Total}"/>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="5">
+                            <Label Text="{Binding Nome}" WidthRequest="150"/>
+                            <Label Text="{Binding Preco, StringFormat='R${0:N2}'}" WidthRequest="80"/>
+                            <Entry Text="{Binding Quantidade}" Keyboard="Numeric" WidthRequest="50"/>
+                            <Label Text="{Binding Total, StringFormat='R${0:N2}'}" WidthRequest="80"/>
+                        </StackLayout>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
+        <Button Text="Adicionar à Compra" Clicked="OnAdicionarProdutoClicked"/>
         <Label x:Name="labelTotal" Text="Total: R$0,00" FontSize="18" HorizontalOptions="Center"/>
     </VerticalStackLayout>
 </ContentPage>
