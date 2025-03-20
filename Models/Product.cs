@@ -2,7 +2,7 @@
 
 namespace CantinaV1.Models
 {
-    public class Produto
+    public class Product
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

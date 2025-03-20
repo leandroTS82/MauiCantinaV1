@@ -11,24 +11,24 @@ namespace CantinaV1.Data
         public Database(string dbPath)
         {
             _database = new SQLiteAsyncConnection(dbPath);
-            _database.CreateTableAsync<Produto>().Wait();
-            _database.CreateTableAsync<Pedido>().Wait();
+            _database.CreateTableAsync<Product>().Wait();
+            _database.CreateTableAsync<Order>().Wait();
         }
 
-        public Task<List<Produto>> GetProdutosAsync()
+        public Task<List<Product>> GetProdutosAsync()
         {
-            return _database.Table<Produto>().ToListAsync();
+            return _database.Table<Product>().ToListAsync();
         }
 
         public async Task InicializarProdutosAsync()
         {
             var produtos = await GetProdutosAsync();
-            _database.DeleteAllAsync<Produto>();
-            var produtosIniciais = new List<Produto>
+            _database.DeleteAllAsync<Product>();
+            var produtosIniciais = new List<Product>
                 {
-                    new Produto { Nome = "Café", Preco = 1.00m, Quantidade = 0 },
-                    new Produto { Nome = "Pão de Queijo", Preco = 5.00m, Quantidade = 0 },
-                    new Produto { Nome = "Pão de batata", Preco = 7.00m, Quantidade = 0 }
+                    new Product { Nome = "Café", Preco = 1.00m, Quantidade = 0 },
+                    new Product { Nome = "Pão de Queijo", Preco = 5.00m, Quantidade = 0 },
+                    new Product { Nome = "Pão de batata", Preco = 7.00m, Quantidade = 0 }
                 };
 
             foreach (var produto in produtosIniciais)
@@ -38,27 +38,27 @@ namespace CantinaV1.Data
 
         }
 
-        public Task<int> SaveProdutoAsync(Produto produto)
+        public Task<int> SaveProdutoAsync(Product produto)
         {
             return _database.InsertAsync(produto);
         }
 
         public Task<int> DeleteAllProdutosAsync()
         {
-            return _database.DeleteAllAsync<Produto>();
+            return _database.DeleteAllAsync<Product>();
         }
 
-        public Task<int> UpdateProdutoAsync(Produto produto)
+        public Task<int> UpdateProdutoAsync(Product produto)
         {
             return _database.UpdateAsync(produto);
         }
 
-        public Task<List<Pedido>> GetPedidosAsync()
+        public Task<List<Order>> GetPedidosAsync()
         {
-            return _database.Table<Pedido>().ToListAsync();
+            return _database.Table<Order>().ToListAsync();
         }
 
-        public Task<int> SavePedidoAsync(Pedido pedido)
+        public Task<int> SavePedidoAsync(Order pedido)
         {
             return _database.InsertAsync(pedido);
         }

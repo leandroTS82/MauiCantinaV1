@@ -6,7 +6,7 @@ namespace CantinaV1
     public partial class MainPage : ContentPage
     {
         private readonly Database _database;
-        private List<Produto> _produtos;
+        private List<Product> _produtos;
 
         public MainPage()
         {

@@ -1,4 +1,7 @@
-﻿namespace CantinaV1
+﻿using CantinaV1.Models;
+using CantinaV1.Views;
+
+namespace CantinaV1
 {
     public partial class App : Application
     {

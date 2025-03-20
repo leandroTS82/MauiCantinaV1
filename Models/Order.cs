@@ -2,7 +2,7 @@
 
 namespace CantinaV1.Models
 {
-    public class Pedido
+    public class Order
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
