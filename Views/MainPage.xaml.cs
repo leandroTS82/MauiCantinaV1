@@ -1,4 +1,4 @@
-﻿namespace CantinaV1
+﻿namespace CantinaV1.Views
 {
     public partial class MainPage : ContentPage
     {
