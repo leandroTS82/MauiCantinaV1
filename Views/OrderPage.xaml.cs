@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace CantinaV1.Views;
 
@@ -16,6 +17,9 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     private string _clientName;
     private string _paymentMethod;
     private List<OrderItem> _orderItems;
+    // Lista para armazenar os pedidos
+    private ObservableCollection<OrderItem> _savedOrders = new ObservableCollection<OrderItem>();
+
 
     public string ClientName
     {
@@ -69,6 +73,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "cantina.db3");
         _database = new Database(dbPath);
+        // Vincula a lista de pedidos ao ListView
+        OrdersListView.ItemsSource = _savedOrders;
 
         Inicializar();
     }
@@ -76,6 +82,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     private async void Inicializar()
     {
         await LoadOrderItemProducts();
+        await LoadSavedOrders(); // Carrega os pedidos salvos
     }
 
     private async Task LoadOrderItemProducts()
@@ -95,6 +102,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         {
             OrderItem orderItem = new OrderItem()
             {
+                ClientName = string.Empty,
                 ProductName = product.Name,
                 Price = product.Price,
                 Quantity = 0
@@ -152,8 +160,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             // Mostrar uma mensagem de confirmação para o usuário
             await DisplayAlert("Pedido", "Pedido salvo com sucesso!", "OK");
 
-            // Limpar o formulário
-            ClearForm();
+            Inicializar();
         }
         else
         {
@@ -161,24 +168,16 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         }
     }
 
-    private void ClearForm()
+    // Adicionando o carregamento de pedidos salvos na página.
+    private async Task LoadSavedOrders()
     {
-        // Limpar o nome do cliente
-        ClientName = string.Empty;
-
-        // Limpar a forma de pagamento
-        PaymentMethod = string.Empty;
-
-        // Limpar os itens do pedido (quantidade de todos os produtos)
-        foreach (var item in _orderItems)
+        var savedOrders = await _database.GetPedidosAsync(); // Recupera os pedidos do banco de dados
+        _savedOrders.Clear(); // Limpa os pedidos antigos
+        foreach (var order in savedOrders)
         {
-            item.Quantity = 0;
+            _savedOrders.Add(order); // Adiciona os pedidos recuperados à lista observada
         }
-
-        // Limpar o texto do total do pedido
-        labelTotalPedido.Text = "Total do Pedido: R$0,00";
     }
-
 
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
