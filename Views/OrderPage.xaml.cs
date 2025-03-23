@@ -128,24 +128,57 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async void OnSaveOrderClicked(object sender, EventArgs e)
     {
-        // Verificar se o nome do cliente foi preenchido
-        if (string.IsNullOrWhiteSpace(ClientName))
+        // Verificar se os campos obrigatórios estão preenchidos
+        if (string.IsNullOrEmpty(ClientName) || string.IsNullOrEmpty(PaymentMethod))
         {
-            await DisplayAlert("Erro", "Por favor, insira o nome do cliente.", "OK");
+            await DisplayAlert("Erro", "O nome do cliente e o método de pagamento são obrigatórios.", "OK");
             return;
         }
 
-        // Percorrer os itens e salvar aqueles com quantidade maior que 0
-        foreach (var orderItem in _orderItems.Where(item => item.Quantity > 0))
+        // Criar uma lista de OrderItem com os produtos que possuem quantidade > 0
+        var orderItemsToSave = _orderItems.Where(item => item.Quantity > 0).ToList();
+
+        if (orderItemsToSave.Any())
         {
-            orderItem.ClientName = ClientName;
-            orderItem.PaymentMethod = PaymentMethod;
-            await _database.SavePedidoAsync(orderItem);
+            // Salvar cada item no banco de dados
+            foreach (var item in orderItemsToSave)
+            {
+                item.ClientName = ClientName;
+                item.PaymentMethod = PaymentMethod;
+
+                await _database.SavePedidoAsync(item);
+            }
+
+            // Mostrar uma mensagem de confirmação para o usuário
+            await DisplayAlert("Pedido", "Pedido salvo com sucesso!", "OK");
+
+            // Limpar o formulário
+            ClearForm();
+        }
+        else
+        {
+            await DisplayAlert("Erro", "Por favor, adicione produtos ao pedido.", "OK");
+        }
+    }
+
+    private void ClearForm()
+    {
+        // Limpar o nome do cliente
+        ClientName = string.Empty;
+
+        // Limpar a forma de pagamento
+        PaymentMethod = string.Empty;
+
+        // Limpar os itens do pedido (quantidade de todos os produtos)
+        foreach (var item in _orderItems)
+        {
+            item.Quantity = 0;
         }
 
-        // Exibir uma mensagem de sucesso
-        await DisplayAlert("Sucesso", "Pedido salvo com sucesso!", "OK");
+        // Limpar o texto do total do pedido
+        labelTotalPedido.Text = "Total do Pedido: R$0,00";
     }
+
 
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
