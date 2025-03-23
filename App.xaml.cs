@@ -9,7 +9,7 @@ namespace CantinaV1
             InitializeComponent();
             // Força o tema claro
             UserAppTheme = AppTheme.Light;
-            MainPage = new NavigationPage(new OrderPage());
+            MainPage = new NavigationPage(new MainPage());
         }
     }
 }

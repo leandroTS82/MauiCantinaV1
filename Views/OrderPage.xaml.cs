@@ -75,7 +75,18 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
         Inicializar();
     }
+    private async void OnClearOrdersClicked(object sender, EventArgs e)
+    {
+        var orderItems = await _database.GetPedidosAsync();
 
+        foreach (var orderItem in orderItems)
+        {
+            await _database.DeleteOrderItemAsync(orderItem);
+        }
+
+        await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos.", "OK");
+        Inicializar();
+    }
     private async void Inicializar()
     {
         await LoadOrderItemProducts();

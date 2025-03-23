@@ -2,7 +2,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CantinaV1.Views.MainPage">
 
-    <VerticalStackLayout>
-        <Label Text="Principal" FontSize="24" HorizontalOptions="Center"/>
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <Label Text="Bem-vindo à Cantina" 
+               FontSize="24" 
+               HorizontalOptions="Center" 
+               FontAttributes="Bold"
+               TextColor="DarkSlateBlue"/>
+
+        <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="DarkBlue">
+            <Button Text="Produtos" 
+                    FontSize="18"
+                    BackgroundColor="LightYellow"
+                    TextColor="Black"
+                    BorderColor="White"
+                    BorderWidth="2"
+                    Clicked="GoToProductsPage"/>
+        </Frame>
+
+        <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="DarkRed">
+            <Button Text="Pedidos" 
+                    FontSize="18"
+                    BackgroundColor="Green"
+                    TextColor="White"
+                    BorderColor="White"
+                    BorderWidth="2"
+                    Clicked="GoToOrderPage"/>
+        </Frame>
+
     </VerticalStackLayout>
 </ContentPage>
