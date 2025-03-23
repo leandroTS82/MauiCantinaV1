@@ -36,5 +36,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Label x:Name="labelTotalPedido" Text="Total do Pedido: R$0,00" FontSize="18" HorizontalOptions="Center" Margin="10,10,0,0"/>
+
     </VerticalStackLayout>
 </ContentPage>

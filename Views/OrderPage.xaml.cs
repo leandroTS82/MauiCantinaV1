@@ -2,7 +2,10 @@ using CantinaV1.Data;
 using CantinaV1.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace CantinaV1.Views;
 
@@ -12,6 +15,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     private List<Product> _product;
     private string _clientName;
     private string _paymentMethod;
+    private List<OrderItem> _orderItems;
 
     public string ClientName
     {
@@ -77,8 +81,11 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     private async Task LoadOrderItemProducts()
     {
         _product = await _database.GetProdutosAsync();
-        List<OrderItem> productOrders = MappProductOrders(_product);
-        listProdutos.ItemsSource = productOrders;
+        _orderItems = MappProductOrders(_product);
+        listProdutos.ItemsSource = _orderItems;
+
+        // Calcular o total do pedido quando os produtos forem carregados
+        UpdateTotalPedido();
     }
 
     private List<OrderItem> MappProductOrders(List<Product> products)
@@ -92,9 +99,31 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
                 Price = product.Price,
                 Quantity = 0
             };
+
+            // Associar o evento de alteração de quantidade
+            orderItem.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == nameof(OrderItem.Quantity))
+                {
+                    UpdateTotalPedido();
+                }
+            };
+
             orderItems.Add(orderItem);
         }
         return orderItems;
+    }
+
+    private void UpdateTotalPedido()
+    {
+        decimal totalPedido = 0;
+        foreach (var item in _orderItems)
+        {
+            totalPedido += item.Total;
+        }
+
+        // Atualizar o texto do label com o total do pedido formatado
+        labelTotalPedido.Text = $"Total do Pedido: R${totalPedido:N2}";
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
