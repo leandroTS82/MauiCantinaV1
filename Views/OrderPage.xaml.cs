@@ -164,24 +164,50 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         }
     }
 
-    // Adicionando o carregamento de pedidos salvos na página.
     private async Task LoadSavedOrders()
     {
         var savedOrders = await _database.GetPedidosAsync(); // Recupera os pedidos do banco de dados
+
+        // Agrupar os pedidos por ClientName e somar os Totais
+        var groupedOrders = savedOrders
+            .GroupBy(order => order.ClientName)
+            .Select(group => new
+            {
+                ClientName = group.Key,
+                PaymentMethod = group.First().PaymentMethod,
+                TotalSum = group.Sum(order => order.Total)
+            })
+            .ToList();
+
         _savedOrders.Clear(); // Limpa os pedidos antigos
-        foreach (var order in savedOrders)
+
+        // Adiciona os pedidos agrupados com a soma total à lista observada
+        foreach (var groupedOrder in groupedOrders)
         {
-            _savedOrders.Add(order); // Adiciona os pedidos recuperados à lista observada
+            _savedOrders.Add(new OrderItem
+            {
+                ClientName = groupedOrder.ClientName,
+                PaymentMethod = groupedOrder.PaymentMethod,
+                TotalSum = groupedOrder.TotalSum
+            });
         }
     }
 
+
     private async void OnCardTapped(object sender, EventArgs e)
     {
-        var frame = (Frame)sender;
-        var clientName = (string)frame.BindingContext; // Recebe o ClientName a partir do BindingContext
+        var frame = sender as Frame;
 
-        // Navega para a página de detalhes, passando o nome do cliente como parâmetro
-        await Navigation.PushAsync(new OrderDetailPage(clientName));
+        if (frame != null)
+        {
+            var order = frame.BindingContext as OrderItem; // Obter o objeto Order do BindingContext
+
+            if (order != null)
+            {
+                // Navegação para a página de detalhes do pedido
+                await Navigation.PushAsync(new OrderDetailPage(order.ClientName));
+            }
+        }
     }
 
 

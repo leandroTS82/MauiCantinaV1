@@ -64,7 +64,7 @@
                                FontSize="10" 
                                TextColor="Gray" />
                                 <!-- Valor Total -->
-                                <Label Text="{Binding Total, StringFormat='R${0:N2}'}" 
+                                <Label Text="{Binding TotalSum, StringFormat='R${0:N2}'}" 
                                Grid.Column="2" 
                                VerticalOptions="Center" 
                                FontSize="12" 
