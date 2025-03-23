@@ -68,7 +68,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         BindingContext = this;
 
         string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "cantina.db3");
+            "cantina.db4");
         _database = new Database(dbPath);
         // Vincula a lista de pedidos ao ListView
         OrdersListView.ItemsSource = _savedOrders;

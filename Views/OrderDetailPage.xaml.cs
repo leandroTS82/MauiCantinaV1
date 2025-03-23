@@ -12,7 +12,7 @@ public partial class OrderDetailPage : ContentPage
     {
         InitializeComponent();
         string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "cantina.db3");
+            "cantina.db4");
         _database = new Database(dbPath);
         _clientName = clientName;
         ClientNameLabel.Text = clientName;
