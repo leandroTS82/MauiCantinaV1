@@ -126,9 +126,31 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         labelTotalPedido.Text = $"Total do Pedido: R${totalPedido:N2}";
     }
 
+    private async void OnSaveOrderClicked(object sender, EventArgs e)
+    {
+        // Verificar se o nome do cliente foi preenchido
+        if (string.IsNullOrWhiteSpace(ClientName))
+        {
+            await DisplayAlert("Erro", "Por favor, insira o nome do cliente.", "OK");
+            return;
+        }
+
+        // Percorrer os itens e salvar aqueles com quantidade maior que 0
+        foreach (var orderItem in _orderItems.Where(item => item.Quantity > 0))
+        {
+            orderItem.ClientName = ClientName;
+            orderItem.PaymentMethod = PaymentMethod;
+            await _database.SavePedidoAsync(orderItem);
+        }
+
+        // Exibir uma mensagem de sucesso
+        await DisplayAlert("Sucesso", "Pedido salvo com sucesso!", "OK");
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
+
