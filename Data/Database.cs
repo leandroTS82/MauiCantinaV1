@@ -63,5 +63,15 @@ namespace CantinaV1.Data
         {
             return _database.InsertAsync(pedido);
         }
+
+        internal async Task<List<OrderItem>> GetOrderItemsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal async Task UpdateOrderItemAsync(OrderItem produto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

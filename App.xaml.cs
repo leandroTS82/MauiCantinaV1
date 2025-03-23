@@ -1,4 +1,5 @@
-﻿using CantinaV1.Views;
+﻿using CantinaV1.Models;
+using CantinaV1.Views;
 
 namespace CantinaV1
 {
@@ -9,7 +10,7 @@ namespace CantinaV1
             InitializeComponent();
             // Força o tema claro
             UserAppTheme = AppTheme.Light;
-            MainPage = new ProductsPage();
+            MainPage = new OrderPage();
         }
     }
 }

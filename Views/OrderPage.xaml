@@ -4,24 +4,20 @@
              x:Class="CantinaV1.Views.OrderPage"
              Title="OrderPage">
     <VerticalStackLayout Padding="20">
-        <Label Text="Pedidos" FontSize="24" HorizontalOptions="Center"/>
-
-        <ListView x:Name="listProdutos" >
+        <Label Text="Cantina da Igreja" FontSize="24" HorizontalOptions="Center"/>
+        <ListView x:Name="listProdutos" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" Padding="5">
-                            <Label Text="{Binding Name}" WidthRequest="150"/>
-                            <Entry Text="{Binding Price, StringFormat='R${0:N2}'}" Keyboard="Numeric" WidthRequest="80"/>
+                            <Label Text="{Binding ProductName}" WidthRequest="150"/>
+                            <Label Text="{Binding Price, StringFormat='R${0:N2}'}" WidthRequest="80"/>
+                            <Entry Text="{Binding Quantity}" Keyboard="Numeric" WidthRequest="50"/>
+                            <Label Text="{Binding Total, StringFormat='R${0:N2}'}" WidthRequest="80"/>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
-        
-        <Label x:Name="labelTotal" Text="Total: R$0,00" FontSize="18" HorizontalOptions="Center"/>
-        
-
     </VerticalStackLayout>
 </ContentPage>
