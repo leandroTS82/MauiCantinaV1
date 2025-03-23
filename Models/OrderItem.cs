@@ -7,6 +7,7 @@ namespace CantinaV1.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
+        public DateTime Created { get; set; } = DateTime.Now;
         public string ClientName { get; set; }
         public string PaymentMethod { get; set; }
         public string ProductName { get; set; }

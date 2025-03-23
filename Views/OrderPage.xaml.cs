@@ -3,6 +3,7 @@ using CantinaV1.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace CantinaV1.Views;
 
@@ -80,7 +81,45 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         await LoadOrderItemProducts();
         await LoadSavedOrders(); // Carrega os pedidos salvos
     }
+    private async void OnExportCsvClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var orders = await _database.GetPedidosAsync();
+            if (orders == null || !orders.Any())
+            {
+                await DisplayAlert("Aviso", "Nenhum pedido encontrado!", "OK");
+                return;
+            }
 
+            // Criar CSV
+            var csvBuilder = new StringBuilder();
+            csvBuilder.AppendLine("Data,Nome, Produto,Valor,Quant.,Total,Forma Pag.");
+
+            foreach (var order in orders)
+            {
+                csvBuilder.AppendLine($"{order.Created},{order.ClientName},{order.ProductName},{order.Price},{order.Quantity},{order.Total},{order.PaymentMethod}");
+            }
+
+            // Criar caminho do arquivo
+            string fileName = $"Pedidos_{DateTime.Now:yyyyMMddHHmmss}.csv";
+            string filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+
+            // Salvar o arquivo
+            File.WriteAllText(filePath, csvBuilder.ToString(), Encoding.UTF8);
+
+            // Compartilhar o arquivo
+            await Share.RequestAsync(new ShareFileRequest
+            {
+                Title = "Compartilhar CSV",
+                File = new ShareFile(filePath)
+            });
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", $"Erro ao exportar CSV: {ex.Message}", "OK");
+        }
+    }
     private async Task LoadOrderItemProducts()
     {
         _product = await _database.GetProdutosAsync();
