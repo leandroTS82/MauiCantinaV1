@@ -40,14 +40,23 @@ namespace CantinaV1.Data
             return _database.Table<OrderItem>().ToListAsync();
         }
 
+        // Recuperar pedidos por ClientName
+        public Task<List<OrderItem>> GetPedidosByClientNameAsync(string clientName)
+        {
+            return _database.Table<OrderItem>()
+                            .Where(orderItem => orderItem.ClientName.ToLower().Equals(clientName.ToLower()))
+                            .ToListAsync();
+        }
+
+        // Excluir um item de pedido
+        public Task<int> DeleteOrderItemAsync(OrderItem orderItem)
+        {
+            return _database.DeleteAsync(orderItem);
+        }
+
         public Task<int> SavePedidoAsync(OrderItem pedido)
         {
             return _database.InsertAsync(pedido);
-        }
-
-        internal async Task<List<OrderItem>> GetOrderItemsAsync()
-        {
-            throw new NotImplementedException();
         }
 
         internal async Task UpdateOrderItemAsync(OrderItem produto)
