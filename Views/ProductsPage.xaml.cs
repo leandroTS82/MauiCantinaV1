@@ -17,7 +17,6 @@ public partial class ProductsPage : ContentPage
     }
     private async void Inicializar()
     {
-        await _database.InicializarProdutosAsync();
         await CarregarProdutos();
     }
 
