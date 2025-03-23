@@ -46,16 +46,35 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <StackLayout>
-                            <Label Text="{Binding ClientName}" />
-                            <Label Text="{Binding PaymentMethod}" />
-                            <Label Text="{Binding Total}" />
-                        </StackLayout>
+                        <Frame Padding="10" Margin="10,5" BorderColor="Gray" CornerRadius="10" HasShadow="True" HeightRequest="40">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCardTapped" CommandParameter="{Binding ClientName}" />
+                            </Frame.GestureRecognizers>
+                            <Grid RowDefinitions="Auto" ColumnDefinitions="*,*,*" HorizontalOptions="FillAndExpand">
+                                <!-- Nome do Cliente -->
+                                <Label Text="{Binding ClientName}" 
+                               Grid.Column="0" 
+                               VerticalOptions="Center" 
+                               FontSize="10" 
+                               FontAttributes="Bold" />
+                                <!-- Forma de Pagamento -->
+                                <Label Text="{Binding PaymentMethod}" 
+                               Grid.Column="1" 
+                               VerticalOptions="Center" 
+                               FontSize="10" 
+                               TextColor="Gray" />
+                                <!-- Valor Total -->
+                                <Label Text="{Binding Total, StringFormat='R${0:N2}'}" 
+                               Grid.Column="2" 
+                               VerticalOptions="Center" 
+                               FontSize="12" 
+                               TextColor="Green" />
+                            </Grid>
+                        </Frame>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        
     </VerticalStackLayout>
 
 </ContentPage>

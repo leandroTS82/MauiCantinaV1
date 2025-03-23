@@ -1,12 +1,8 @@
 using CantinaV1.Data;
 using CantinaV1.Models;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.IO;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace CantinaV1.Views;
 
@@ -178,6 +174,16 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             _savedOrders.Add(order); // Adiciona os pedidos recuperados à lista observada
         }
     }
+
+    private async void OnCardTapped(object sender, EventArgs e)
+    {
+        var frame = (Frame)sender;
+        var clientName = (string)frame.BindingContext; // Recebe o ClientName a partir do BindingContext
+
+        // Navega para a página de detalhes, passando o nome do cliente como parâmetro
+        await Navigation.PushAsync(new OrderDetailPage(clientName));
+    }
+
 
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
