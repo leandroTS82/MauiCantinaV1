@@ -229,17 +229,26 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             })
             .ToList();
 
-        _savedOrders.Clear(); // Limpa os pedidos antigos
-
-        // Adiciona os pedidos agrupados com a soma total à lista observada
         foreach (var groupedOrder in groupedOrders)
         {
-            _savedOrders.Add(new OrderItem
+            // Verifica se o pedido já existe na lista
+            var existingOrder = _savedOrders.FirstOrDefault(o => o.ClientName == groupedOrder.ClientName);
+
+            if (existingOrder == null)
             {
-                ClientName = groupedOrder.ClientName,
-                PaymentMethod = groupedOrder.PaymentMethod,
-                TotalSum = groupedOrder.TotalSum
-            });
+                // Adiciona novo pedido se não existir
+                _savedOrders.Add(new OrderItem
+                {
+                    ClientName = groupedOrder.ClientName,
+                    PaymentMethod = groupedOrder.PaymentMethod,
+                    TotalSum = groupedOrder.TotalSum
+                });
+            }
+            else
+            {
+                // Atualiza o TotalSum se o pedido já existir
+                existingOrder.TotalSum = groupedOrder.TotalSum;
+            }
         }
     }
 
