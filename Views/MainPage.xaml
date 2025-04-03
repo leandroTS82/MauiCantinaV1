@@ -29,6 +29,15 @@
                     BorderWidth="2"
                     Clicked="GoToOrderPage"/>
         </Frame>
+        <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="Green">
+            <Button Text="Mensagem whatsapp de teste" 
+            FontSize="18"
+            BackgroundColor="Green" 
+            TextColor="White"
+            BorderColor="White"
+            BorderWidth="2"
+            Clicked="OnSendMessageClicked"/>
+        </Frame>
 
     </VerticalStackLayout>
 </ContentPage>
