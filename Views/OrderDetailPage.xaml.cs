@@ -44,7 +44,7 @@ public partial class OrderDetailPage : ContentPage
         }
 
         await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos.", "OK");
-        LoadOrderItems();  // Recarrega a lista após exclusão
+        await Navigation.PushAsync(new OrderPage());
     }
 
     // Excluir um item específico do pedido

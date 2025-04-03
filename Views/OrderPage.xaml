@@ -9,17 +9,30 @@
 
             <!-- Campo para inserir o nome do cliente -->
             <Entry x:Name="entryClientName"
-           Placeholder="Nome do Cliente"
-           Text="{Binding ClientName, Mode=TwoWay}"
-           Margin="0,10,0,0"/>
+       Placeholder="Nome do Cliente"
+       Text="{Binding ClientName, Mode=TwoWay}"
+       Margin="0,10,0,0"
+       TextChanged="OnClientNameTextChanged"/>
+
+            <ListView x:Name="listSuggestions"
+          ItemsSource="{Binding FilteredClients}"
+          IsVisible="False"
+          SelectionMode="Single"
+          ItemSelected="OnSuggestionSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <!-- Grupo de botões para selecionar método de pagamento -->
             <Label Text="Forma de Pagamento:" FontSize="16" Margin="0,10,0,5"/>
             <HorizontalStackLayout>
-                <RadioButton Content="Dinheiro" Value="Dinheiro" IsChecked="{Binding IsDinheiro, Mode=TwoWay}"/>
-                <RadioButton Content="Pix" Value="Pix" IsChecked="{Binding IsPix, Mode=TwoWay}"/>
-                <RadioButton Content="Pagar depois" Value="Pagar depois" IsChecked="{Binding IsPagarDepois, Mode=TwoWay}"/>
-                <RadioButton Content="Cartão" Value="Cartão" IsChecked="{Binding IsCartao, Mode=TwoWay}"/>
+                <RadioButton x:Name="radioDinheiro" Content="Dinheiro" Value="Dinheiro" IsChecked="{Binding IsDinheiro, Mode=TwoWay}"/>
+                <RadioButton x:Name="radioPix" Content="Pix" Value="Pix" IsChecked="{Binding IsPix, Mode=TwoWay}"/>
+                <RadioButton x:Name="radioPagarDepois" Content="Pagar depois" Value="Pagar depois" IsChecked="{Binding IsPagarDepois, Mode=TwoWay}"/>
+                <RadioButton x:Name="radioCartao" Content="Cartão" Value="Cartão" IsChecked="{Binding IsCartao, Mode=TwoWay}"/>
             </HorizontalStackLayout>
 
             <!-- Lista de Produtos e Quantidade -->

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 
 namespace CantinaV1.Views;
 
@@ -16,6 +17,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     private List<OrderItem> _orderItems;
     // Lista para armazenar os pedidos
     private ObservableCollection<OrderItem> _savedOrders = new ObservableCollection<OrderItem>();
+    private List<string> _clients = new List<string>();
+    public ObservableCollection<string> FilteredClients { get; set; } = new();
 
 
     public string ClientName
@@ -74,7 +77,56 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         OrdersListView.ItemsSource = _savedOrders;
 
         Inicializar();
+        BindingContext = this;
+        LoadClientsFromJson();
     }
+
+    private async void LoadClientsFromJson()
+    {
+        try
+        {
+            using var stream = await FileSystem.OpenAppPackageFileAsync("clients.json");
+            using var reader = new StreamReader(stream);
+            var json = await reader.ReadToEndAsync();
+            _clients = JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", "Erro ao carregar clientes: " + ex.Message, "OK");
+        }
+    }
+
+    private void OnClientNameTextChanged(object sender, TextChangedEventArgs e)
+    {
+        string query = e.NewTextValue?.ToLower() ?? string.Empty;
+        FilteredClients.Clear();
+
+        if (!string.IsNullOrEmpty(query))
+        {
+            var matches = _clients.Where(name => name.ToLower().Contains(query)).ToList();
+            foreach (var match in matches)
+                FilteredClients.Add(match);
+
+            listSuggestions.IsVisible = FilteredClients.Count > 0;
+        }
+        else
+        {
+            listSuggestions.IsVisible = false;
+        }
+    }
+
+    private void OnSuggestionSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        if (e.SelectedItem is string selectedClient)
+        {
+            entryClientName.Text = selectedClient;
+            listSuggestions.IsVisible = false;
+
+            // Limpar seleção para evitar que o mesmo item fique selecionado
+            listSuggestions.SelectedItem = null;
+        }
+    }
+
     private async void OnClearOrdersClicked(object sender, EventArgs e)
     {
         var orderItems = await _database.GetPedidosAsync();
@@ -91,7 +143,20 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     {
         await LoadOrderItemProducts();
         await LoadSavedOrders(); // Carrega os pedidos salvos
+        entryClientName.Text = string.Empty;
+        UnCheckRadiosPaymentMethod();
+
     }
+
+    private void UnCheckRadiosPaymentMethod()
+    {
+        // Desmarca os RadioButtons
+        radioDinheiro.IsChecked = false;
+        radioPix.IsChecked = false;
+        radioPagarDepois.IsChecked = false;
+        radioCartao.IsChecked = false;
+    }
+
     private async void OnExportCsvClicked(object sender, EventArgs e)
     {
         try
