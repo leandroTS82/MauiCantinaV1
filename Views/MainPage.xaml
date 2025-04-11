@@ -30,13 +30,13 @@
                     Clicked="GoToOrderPage"/>
         </Frame>
         <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="Green">
-            <Button Text="Mensagem whatsapp de teste" 
+            <Button Text="Configurações" 
             FontSize="18"
             BackgroundColor="Green" 
             TextColor="White"
             BorderColor="White"
             BorderWidth="2"
-            Clicked="OnSendMessageClicked"/>
+            Clicked="GoToConfigurationPage"/>
         </Frame>
 
     </VerticalStackLayout>

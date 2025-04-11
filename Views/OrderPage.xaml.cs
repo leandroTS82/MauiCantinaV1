@@ -1,5 +1,6 @@
 using CantinaV1.Data;
 using CantinaV1.Models;
+using CantinaV1.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -267,6 +268,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
                 await _database.SavePedidoAsync(item);
             }
+            WhatsAppService whatsAppService = new WhatsAppService();
+            await whatsAppService.SendOrderAsync(orderItemsToSave);
 
             // Mostrar uma mensagem de confirmação para o usuário
             await DisplayAlert("Pedido", "Pedido salvo com sucesso!", "OK");

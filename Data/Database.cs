@@ -13,6 +13,7 @@ namespace CantinaV1.Data
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<Product>().Wait();
             _database.CreateTableAsync<OrderItem>().Wait();
+            _database.CreateTableAsync<Configuration>().Wait();
         }
 
         public Task<List<Product>> GetProdutosAsync()
@@ -34,6 +35,17 @@ namespace CantinaV1.Data
         {
             return _database.UpdateAsync(produto);
         }
+
+        public Task<int> SaveConfiguracaoAsync(Configuration config)
+        {
+            return _database.InsertOrReplaceAsync(config);
+        }
+
+        public Task<Configuration> GetConfiguracaoAsync()
+        {
+            return _database.Table<Configuration>().FirstOrDefaultAsync();
+        }
+    
 
         public Task<List<OrderItem>> GetPedidosAsync()
         {
