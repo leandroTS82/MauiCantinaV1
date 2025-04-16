@@ -1,4 +1,4 @@
-using CantinaV1.Data;
+Ôªøusing CantinaV1.Data;
 using CantinaV1.Models;
 using CantinaV1.Services;
 using System.Collections.ObjectModel;
@@ -52,8 +52,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     public bool IsCartao
     {
-        get => _paymentMethod == "Cart„o";
-        set { if (value) PaymentMethod = "Cart„o"; }
+        get => _paymentMethod == "Cart√£o";
+        set { if (value) PaymentMethod = "Cart√£o"; }
     }
 
     public string PaymentMethod
@@ -123,7 +123,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             entryClientName.Text = selectedClient;
             listSuggestions.IsVisible = false;
 
-            // Limpar seleÁ„o para evitar que o mesmo item fique selecionado
+            // Limpar sele√ß√£o para evitar que o mesmo item fique selecionado
             listSuggestions.SelectedItem = null;
         }
     }
@@ -137,7 +137,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             await _database.DeleteOrderItemAsync(orderItem);
         }
 
-        await DisplayAlert("Sucesso", "Todos os pedidos foram excluÌdos.", "OK");
+        await DisplayAlert("Sucesso", "Todos os pedidos foram exclu√≠dos.", "OK");
         Inicializar();
     }
     private async void Inicializar()
@@ -162,22 +162,20 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     {
         try
         {
-            string action = await DisplayActionSheet("Escolha uma opÁ„o de exportaÁ„o", "Cancelar", null,
-                                             "RelatÛrio por mensagem", "RelatÛrio em PDF", "RelatÛrio em CSV");
+            string action = await DisplayActionSheet("üì§ Como deseja exportar o relat√≥rio?", "‚ùå Cancelar", null,
+                                         "üì± Relat√≥rio via Mensagem", "üìä Relat√≥rio em Planilha");
+
 
             var orders = await _database.GetPedidosAsync();
             var products = await _database.GetProdutosAsync();
 
             switch (action)
             {
-                case "Texto por mensagem":
+                case "üì± Relat√≥rio via Mensagem":
                     await ExportToWhatsapp(orders, products);
                     break;
-                case "Gerar arquivo":
-                    await ExportCsvAsync(orders);
-                    break;
-                case "RelatÛrio em PDF":
-                    await ExportToPdf(orders, products);
+                case "üìä Relat√≥rio em Planilha":
+                    await ExportXlsxAsync(orders);
                     break;
                 case "Cancelar":
                 default:
@@ -190,26 +188,21 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         }
     }
 
-    private async Task ExportToPdf(List<OrderItem> orders, List<Product> products)
-    {
-        throw new NotImplementedException();
-    }
-
     private async Task ExportToWhatsapp(List<OrderItem> orders, List<Product> products)
     {
-        string ddd = await DisplayPromptAsync("DDD", "Informe o DDD (apenas n˙meros):",
+        string ddd = await DisplayPromptAsync("DDD", "Informe o DDD (apenas n√∫meros):",
                                           "OK", "Cancelar", "Ex: 11", 2, keyboard: Keyboard.Numeric);
         if (string.IsNullOrWhiteSpace(ddd) || ddd.Length != 2 || !ddd.All(char.IsDigit))
         {
-            await DisplayAlert("Erro", "DDD inv·lido. Digite exatamente 2 dÌgitos numÈricos.", "OK");
+            await DisplayAlert("Erro", "DDD inv√°lido. Digite exatamente 2 d√≠gitos num√©ricos.", "OK");
             return;
         }
 
-        string telefone = await DisplayPromptAsync("Telefone", "Informe o n˙mero (9 dÌgitos):",
+        string telefone = await DisplayPromptAsync("Telefone", "Informe o n√∫mero (9 d√≠gitos):",
                                                    "OK", "Cancelar", "Ex: 912345678", 9, keyboard: Keyboard.Numeric);
         if (string.IsNullOrWhiteSpace(telefone) || telefone.Length != 9 || !telefone.All(char.IsDigit))
         {
-            await DisplayAlert("Erro", "N˙mero inv·lido. Digite exatamente 9 dÌgitos numÈricos.", "OK");
+            await DisplayAlert("Erro", "N√∫mero inv√°lido. Digite exatamente 9 d√≠gitos num√©ricos.", "OK");
             return;
         }
 
@@ -219,10 +212,10 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         await whatsAppService.SendOrdersToCustomNumberAsync(orders, products, phoneNumber);
     }
 
-    private async Task ExportCsvAsync(List<OrderItem> orders)
+    private async Task ExportXlsxAsync(List<OrderItem> orders)
     {
-        CsvService exportCsvService = new CsvService();
-        var response = await exportCsvService.ExportCsv(orders);
+        XlsxService exportXlsxService = new XlsxService();
+        var response = await exportXlsxService.ExportOrdersToXlsxAsync(orders);
         if (response.StatusCode == 200)
         {
             await DisplayAlert("Sucesso", response.Message, "OK");
@@ -254,7 +247,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
                 Quantity = 0
             };
 
-            // Associar o evento de alteraÁ„o de quantidade
+            // Associar o evento de altera√ß√£o de quantidade
             orderItem.PropertyChanged += (sender, e) =>
             {
                 if (e.PropertyName == nameof(OrderItem.Quantity))
@@ -282,10 +275,10 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async void OnSaveOrderClicked(object sender, EventArgs e)
     {
-        // Verificar se os campos obrigatÛrios est„o preenchidos
+        // Verificar se os campos obrigat√≥rios est√£o preenchidos
         if (string.IsNullOrEmpty(ClientName) || string.IsNullOrEmpty(PaymentMethod))
         {
-            await DisplayAlert("Erro", "O nome do cliente e o mÈtodo de pagamento s„o obrigatÛrios.", "OK");
+            await DisplayAlert("Erro", "O nome do cliente e o m√©todo de pagamento s√£o obrigat√≥rios.", "OK");
             return;
         }
 
@@ -305,7 +298,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             WhatsAppService whatsAppService = new WhatsAppService();
             await whatsAppService.SendOrderAsync(orderItemsToSave);
 
-            // Mostrar uma mensagem de confirmaÁ„o para o usu·rio
+            // Mostrar uma mensagem de confirma√ß√£o para o usu√°rio
             await DisplayAlert("Pedido", "Pedido salvo com sucesso!", "OK");
 
             Inicializar();
@@ -333,12 +326,12 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
         foreach (var groupedOrder in groupedOrders)
         {
-            // Verifica se o pedido j· existe na lista
+            // Verifica se o pedido j√° existe na lista
             var existingOrder = _savedOrders.FirstOrDefault(o => o.ClientName == groupedOrder.ClientName);
 
             if (existingOrder == null)
             {
-                // Adiciona novo pedido se n„o existir
+                // Adiciona novo pedido se n√£o existir
                 _savedOrders.Add(new OrderItem
                 {
                     ClientName = groupedOrder.ClientName,
@@ -348,7 +341,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             }
             else
             {
-                // Atualiza o TotalSum se o pedido j· existir
+                // Atualiza o TotalSum se o pedido j√° existir
                 existingOrder.TotalSum = groupedOrder.TotalSum;
             }
         }
@@ -365,7 +358,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
             if (order != null)
             {
-                // NavegaÁ„o para a p·gina de detalhes do pedido
+                // Navega√ß√£o para a p√°gina de detalhes do pedido
                 await Navigation.PushAsync(new OrderDetailPage(order.ClientName));
             }
         }
