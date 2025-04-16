@@ -163,7 +163,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         try
         {
             string action = await DisplayActionSheet("📤 Como deseja exportar o relatório?", "❌ Cancelar", null,
-                                         "📱 Relatório via Mensagem", "📊 Relatório em Planilha");
+                                         "📊 Relatório em Planilha",
+                                         "📋 Copiar relatório em texto");
 
 
             var orders = await _database.GetPedidosAsync();
@@ -171,21 +172,34 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
             switch (action)
             {
-                case "📱 Relatório via Mensagem":
-                    await ExportToWhatsapp(orders, products);
-                    break;
                 case "📊 Relatório em Planilha":
                     await ExportXlsxAsync(orders);
                     break;
-                case "Cancelar":
+                case "📋 Copiar relatório em texto":
+                    await CopyReportTextAsync(orders, products);
+                    break;
+                case "❌ Cancelar":
                 default:
                     break;
             }
+
         }
         catch (Exception ex)
         {
             await DisplayAlert("Erro", $"Erro ao exportar CSV: {ex.Message}", "OK");
         }
+    }
+
+    private async Task CopyReportTextAsync(List<OrderItem> orders, List<Product> products)
+    {
+        CopyContentService copyContentService = new CopyContentService();
+        ResponseModel response = await copyContentService.CopyReportTextAsync(orders, products);
+        if (response.StatusCode == 200)
+        {
+            await DisplayAlert("Sucesso", response.Message, "OK");
+        }
+        else
+            await DisplayAlert("Aviso", response.Message, "OK");
     }
 
     private async Task ExportToWhatsapp(List<OrderItem> orders, List<Product> products)
