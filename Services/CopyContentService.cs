@@ -43,8 +43,9 @@ namespace CantinaV1.Services
 
             foreach (var paymentGroup in groupedByPayment)
             {
-                string paymentMethod = paymentGroup.Key;
-                messageBuilder.AppendLine($"  *{paymentMethod.Trim()}*");
+                string paymentMethod = paymentGroup.Key; 
+                messageBuilder.AppendLine($"   *{paymentMethod.Trim()}*");
+                messageBuilder.AppendLine();
 
                 // Agrupar por cliente
                 var groupedByClient = paymentGroup
@@ -71,7 +72,6 @@ namespace CantinaV1.Services
                 totalByPayment[paymentMethod] = totalFormaPagamento;
                 messageBuilder.AppendLine();
                 messageBuilder.AppendLine("##############################################");
-                messageBuilder.AppendLine();
             }
 
             // Totais por forma de pagamento
