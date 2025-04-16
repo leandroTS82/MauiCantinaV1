@@ -29,14 +29,37 @@
                     BorderWidth="2"
                     Clicked="GoToOrderPage"/>
         </Frame>
+
         <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="Green">
             <Button Text="Configurações" 
-            FontSize="18"
-            BackgroundColor="Green" 
-            TextColor="White"
-            BorderColor="White"
-            BorderWidth="2"
-            Clicked="GoToConfigurationPage"/>
+                    FontSize="18"
+                    BackgroundColor="Green" 
+                    TextColor="White"
+                    BorderColor="White"
+                    BorderWidth="2"
+                    Clicked="GoToConfigurationPage"/>
+        </Frame>
+
+        <!-- Seção de instruções -->
+        <Frame BackgroundColor="LightGray"
+               CornerRadius="10"
+               Padding="10"
+               HasShadow="True">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Como usar a Cantina"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="Black"/>
+                <Label Text="1 - Vá em 'Produtos' e cadastre os itens que serão vendidos e seus preços."
+                       FontSize="14"
+                       TextColor="Black"/>
+                <Label Text="2 - Em 'Configurações', você pode ativar o envio de pedidos para o balcão via WhatsApp."
+                       FontSize="14"
+                       TextColor="Black"/>
+                <Label Text="3 - Em 'Pedidos', registre os pedidos com nome (alguns nomes estão pré cadastrados e aparecem quando iniciar a digitação), quantidade e forma de pagamento. No final, clique em 'Exportar' para gerar e compartilhar o relatório do caixa."
+                       FontSize="14"
+                       TextColor="Black"/>
+            </VerticalStackLayout>
         </Frame>
 
     </VerticalStackLayout>
