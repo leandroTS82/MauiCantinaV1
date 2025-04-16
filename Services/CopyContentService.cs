@@ -24,7 +24,7 @@ namespace CantinaV1.Services
             // Produtos
             if (products != null && products.Any())
             {
-                messageBuilder.AppendLine("Produtos:");
+                messageBuilder.AppendLine("*Produtos*:");
                 foreach (var product in products)
                 {
                     messageBuilder.AppendLine($"{product.Name} : R$ {product.Price:0.00}");
