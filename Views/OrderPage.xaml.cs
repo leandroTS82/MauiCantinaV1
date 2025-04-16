@@ -158,45 +158,79 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         radioCartao.IsChecked = false;
     }
 
-    private async void OnExportCsvClicked(object sender, EventArgs e)
+    private async void OnExportClicked(object sender, EventArgs e)
     {
         try
         {
+            string action = await DisplayActionSheet("Escolha uma opção de exportação", "Cancelar", null,
+                                             "Relatório por mensagem", "Relatório em PDF", "Relatório em CSV");
+
             var orders = await _database.GetPedidosAsync();
-            if (orders == null || !orders.Any())
+            var products = await _database.GetProdutosAsync();
+
+            switch (action)
             {
-                await DisplayAlert("Aviso", "Nenhum pedido encontrado!", "OK");
-                return;
+                case "Texto por mensagem":
+                    await ExportToWhatsapp(orders, products);
+                    break;
+                case "Gerar arquivo":
+                    await ExportCsvAsync(orders);
+                    break;
+                case "Relatório em PDF":
+                    await ExportToPdf(orders, products);
+                    break;
+                case "Cancelar":
+                default:
+                    break;
             }
-
-            // Criar CSV
-            var csvBuilder = new StringBuilder();
-            csvBuilder.AppendLine("Data,Nome, Produto,Valor,Quant.,Total,Forma Pag.");
-
-            foreach (var order in orders)
-            {
-                csvBuilder.AppendLine($"{order.Created},{order.ClientName},{order.ProductName},{order.Price},{order.Quantity},{order.Total},{order.PaymentMethod}");
-            }
-
-            // Criar caminho do arquivo
-            string fileName = $"Pedidos_{DateTime.Now:yyyyMMddHHmmss}.csv";
-            string filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
-
-            // Salvar o arquivo
-            File.WriteAllText(filePath, csvBuilder.ToString(), Encoding.UTF8);
-
-            // Compartilhar o arquivo
-            await Share.RequestAsync(new ShareFileRequest
-            {
-                Title = "Compartilhar CSV",
-                File = new ShareFile(filePath)
-            });
         }
         catch (Exception ex)
         {
             await DisplayAlert("Erro", $"Erro ao exportar CSV: {ex.Message}", "OK");
         }
     }
+
+    private async Task ExportToPdf(List<OrderItem> orders, List<Product> products)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task ExportToWhatsapp(List<OrderItem> orders, List<Product> products)
+    {
+        string ddd = await DisplayPromptAsync("DDD", "Informe o DDD (apenas números):",
+                                          "OK", "Cancelar", "Ex: 11", 2, keyboard: Keyboard.Numeric);
+        if (string.IsNullOrWhiteSpace(ddd) || ddd.Length != 2 || !ddd.All(char.IsDigit))
+        {
+            await DisplayAlert("Erro", "DDD inválido. Digite exatamente 2 dígitos numéricos.", "OK");
+            return;
+        }
+
+        string telefone = await DisplayPromptAsync("Telefone", "Informe o número (9 dígitos):",
+                                                   "OK", "Cancelar", "Ex: 912345678", 9, keyboard: Keyboard.Numeric);
+        if (string.IsNullOrWhiteSpace(telefone) || telefone.Length != 9 || !telefone.All(char.IsDigit))
+        {
+            await DisplayAlert("Erro", "Número inválido. Digite exatamente 9 dígitos numéricos.", "OK");
+            return;
+        }
+
+        string phoneNumber = $"550{ddd}{telefone}";
+
+        WhatsAppService whatsAppService = new WhatsAppService();
+        await whatsAppService.SendOrdersToCustomNumberAsync(orders, products, phoneNumber);
+    }
+
+    private async Task ExportCsvAsync(List<OrderItem> orders)
+    {
+        CsvService exportCsvService = new CsvService();
+        var response = await exportCsvService.ExportCsv(orders);
+        if (response.StatusCode == 200)
+        {
+            await DisplayAlert("Sucesso", response.Message, "OK");
+        }
+        else
+            await DisplayAlert("Aviso", response.Message, "OK");
+    }
+
     private async Task LoadOrderItemProducts()
     {
         _product = await _database.GetProdutosAsync();

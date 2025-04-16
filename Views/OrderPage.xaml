@@ -54,8 +54,8 @@
 
             <!-- Botões na mesma linha -->
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                <Button Text="Salvar Pedido" Clicked="OnSaveOrderClicked"/>
-                <Button Text="Exportar CSV" Clicked="OnExportCsvClicked"/>
+                <Button Text="Registrar Pedido" Clicked="OnSaveOrderClicked"/>
+                <Button Text="Exportar" Clicked="OnExportClicked"/>
                 <Button Text="Limpar" TextColor="White" BackgroundColor="Red" Clicked="OnClearOrdersClicked"/>
             </HorizontalStackLayout>
 
