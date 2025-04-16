@@ -192,7 +192,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async Task ExportToPdf(List<OrderItem> orders, List<Product> products)
     {
-        throw new NotImplementedException();
+        PdfService pdfService = new PdfService();
+        await pdfService.GenerateOrdersPdfAsync(orders, products);
     }
 
     private async Task ExportToWhatsapp(List<OrderItem> orders, List<Product> products)
