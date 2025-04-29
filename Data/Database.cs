@@ -14,6 +14,7 @@ namespace CantinaV1.Data
             _database.CreateTableAsync<Product>().Wait();
             _database.CreateTableAsync<OrderItem>().Wait();
             _database.CreateTableAsync<Configuration>().Wait();
+            _database.CreateTableAsync<GenericConfiguration>().Wait();
         }
 
         public Task<List<Product>> GetProdutosAsync()
@@ -40,12 +41,23 @@ namespace CantinaV1.Data
         {
             return _database.InsertOrReplaceAsync(config);
         }
-
+        public Task<int> SaveGenericConfigurationAsync(GenericConfiguration config)
+        {
+            return _database.InsertAsync(config);
+        }
+        public Task<int> UpdateGenericConfigurationoAsync(GenericConfiguration genericConfiguration)
+        {
+            return _database.UpdateAsync(genericConfiguration);
+        }
+        public Task<List<GenericConfiguration>> GetGenericConfigurationAsync()
+        {
+            return _database.Table<GenericConfiguration>().ToListAsync();
+        }
         public Task<Configuration> GetConfiguracaoAsync()
         {
             return _database.Table<Configuration>().FirstOrDefaultAsync();
         }
-    
+
 
         public Task<List<OrderItem>> GetPedidosAsync()
         {

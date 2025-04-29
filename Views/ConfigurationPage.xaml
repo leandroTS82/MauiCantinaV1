@@ -3,32 +3,103 @@
              x:Class="CantinaV1.Views.ConfigurationPage"
              Title="Configurações">
 
-    <VerticalStackLayout Padding="20" Spacing="20">
-        <Label Text="Configurações de Contato" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center"/>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
 
-        <!-- Seção de Configuração -->
-        <Frame Padding="15" CornerRadius="10" BackgroundColor="#f5f5f5">
-            <VerticalStackLayout Spacing="15">
+            <Label Text="Configurações Gerais" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center"/>
 
-                <!-- DDD e Telefone -->
-                <HorizontalStackLayout Spacing="10">
-                    <Entry x:Name="entryDDD" Placeholder="DDD" Keyboard="Numeric" WidthRequest="80" TextChanged="entryDDD_TextChanged"/>
-                    <Entry x:Name="entryTelefone" Placeholder="Telefone" Keyboard="Telephone" HorizontalOptions="FillAndExpand"/>
-                </HorizontalStackLayout>
+            <!-- Seção: Contato WhatsApp -->
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="#F5F5F5">
+                <VerticalStackLayout Spacing="15">
 
-                <!-- Botões lado a lado -->
-                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                    <Switch x:Name="switchHabilitado" />
-                    <Label Text="Receber pedidos" VerticalOptions="Center" />
-                    <Button Text="Salvar" Clicked="OnSalvarConfiguracaoClicked" WidthRequest="80" BackgroundColor="#2196F3" TextColor="White"/>
-                </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="10">
+                        <Entry x:Name="entryDDD" 
+                               Placeholder="DDD" 
+                               Keyboard="Numeric" 
+                               WidthRequest="80"
+                               TextChanged="entryDDD_TextChanged"/>
+                        <Entry x:Name="entryTelefone" 
+                               Placeholder="Telefone" 
+                               Keyboard="Telephone" 
+                               HorizontalOptions="FillAndExpand"/>
+                    </HorizontalStackLayout>
 
-                <!-- Informação adicional -->
-                <Label Text="O número registrado receberá os pedidos para entrega no balcão." 
-                       FontAttributes="Italic" 
-                       FontSize="14" 
-                       TextColor="Gray"/>
-            </VerticalStackLayout>
-        </Frame>
-    </VerticalStackLayout>
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Switch x:Name="switchHabilitado"/>
+                        <Label Text="Pedidos pelo WhatsApp" VerticalOptions="Center"/>
+                        <Button Text="Salvar" 
+                                Clicked="OnSalvarConfiguracaoClicked" 
+                                WidthRequest="80" 
+                                BackgroundColor="#2196F3" 
+                                TextColor="White"/>
+                    </HorizontalStackLayout>
+
+                    <Label Text="O número registrado receberá os pedidos para entrega no balcão."
+                           FontAttributes="Italic" 
+                           FontSize="14" 
+                           TextColor="Gray"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Seção: Código App -->
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="#F5F5F5">
+                <VerticalStackLayout Spacing="15">
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Entry x:Name="entryCodeApp" IsReadOnly="True" HorizontalOptions="FillAndExpand"/>
+                        <Button Text="Novo código" 
+                                Clicked="OnNewCodeAppClicked" 
+                                WidthRequest="120" 
+                                BackgroundColor="LightGreen" 
+                                TextColor="DarkGreen"/>
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Switch x:Name="switchSendCodeApp"/>
+                        <Label Text="Enviar pedidos pelo app" VerticalOptions="Center"/>
+                        <Button Text="Salvar" 
+                                Clicked="OnSaveSendCodeAppClicked" 
+                                WidthRequest="80" 
+                                BackgroundColor="#2196F3" 
+                                TextColor="White"/>
+                    </HorizontalStackLayout>
+
+                    <Label Text="Insira o número gerado e clique em salvar. Em seguida, vá para a página Balcão."
+                           FontAttributes="Italic" 
+                           FontSize="14" 
+                           TextColor="Gray"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Seção: Registrar Código App -->
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="#F5F5F5">
+                <VerticalStackLayout Spacing="15">
+
+                    <Entry x:Name="entryRegisterCodeApp" 
+                           Placeholder="Insira o código" 
+                           Keyboard="Numeric" 
+                           WidthRequest="160"/>
+
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Switch x:Name="switchReceiveCodeApp"/>
+                        <Label Text="Receber pedidos pelo app" VerticalOptions="Center"/>
+                        <Button Text="Salvar" 
+                                Clicked="OnSaveReceiveCodeAppClicked" 
+                                WidthRequest="80" 
+                                BackgroundColor="#2196F3" 
+                                TextColor="White"/>
+                    </HorizontalStackLayout>
+
+                    <Label Text="O número registrado receberá os pedidos para entrega no balcão."
+                           FontAttributes="Italic" 
+                           FontSize="14" 
+                           TextColor="Gray"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

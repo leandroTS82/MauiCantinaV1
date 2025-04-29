@@ -200,31 +200,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         }
         else
             await DisplayAlert("Aviso", response.Message, "OK");
-    }
-
-    private async Task ExportToWhatsapp(List<OrderItem> orders, List<Product> products)
-    {
-        string ddd = await DisplayPromptAsync("DDD", "Informe o DDD (apenas números):",
-                                          "OK", "Cancelar", "Ex: 11", 2, keyboard: Keyboard.Numeric);
-        if (string.IsNullOrWhiteSpace(ddd) || ddd.Length != 2 || !ddd.All(char.IsDigit))
-        {
-            await DisplayAlert("Erro", "DDD inválido. Digite exatamente 2 dígitos numéricos.", "OK");
-            return;
-        }
-
-        string telefone = await DisplayPromptAsync("Telefone", "Informe o número (9 dígitos):",
-                                                   "OK", "Cancelar", "Ex: 912345678", 9, keyboard: Keyboard.Numeric);
-        if (string.IsNullOrWhiteSpace(telefone) || telefone.Length != 9 || !telefone.All(char.IsDigit))
-        {
-            await DisplayAlert("Erro", "Número inválido. Digite exatamente 9 dígitos numéricos.", "OK");
-            return;
-        }
-
-        string phoneNumber = $"550{ddd}{telefone}";
-
-        WhatsAppService whatsAppService = new WhatsAppService();
-        await whatsAppService.SendOrdersToCustomNumberAsync(orders, products, phoneNumber);
-    }
+    }    
 
     private async Task ExportXlsxAsync(List<OrderItem> orders)
     {
