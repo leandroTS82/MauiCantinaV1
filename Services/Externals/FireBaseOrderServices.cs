@@ -57,18 +57,5 @@ namespace CantinaV1.Services.Externals
                 .Child(orderKey)
                 .PostAsync(pedido);
         }
-    }
-
-    internal class ProductToOrder
-    {
-        public string ProductName { get; set; }
-        public int Quantity { get; set; }
-    }
-
-    internal class OrderToSend
-    {
-        public string ClientName { get; set; }
-        public List<ProductToOrder> Products { get; set; }
-        public string Created { get; set; }
-    }
+    }    
 }

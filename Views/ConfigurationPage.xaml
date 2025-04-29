@@ -93,7 +93,7 @@
                                 TextColor="White"/>
                     </HorizontalStackLayout>
 
-                    <Label Text="Insira o código recebido, habilite o recebimento e clique em salvar, em seguida pode ir para a página \"Balcão\""
+                    <Label Text="Insira o código recebido, habilite o recebimento e clique em salvar, em seguida pode ir para a página Balcão"
                            FontAttributes="Italic" 
                            FontSize="14" 
                            TextColor="Gray"/>
