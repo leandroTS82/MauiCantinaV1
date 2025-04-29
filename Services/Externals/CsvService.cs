@@ -1,7 +1,7 @@
 ﻿using CantinaV1.Models;
 using System.Text;
 
-namespace CantinaV1.Services.Internals
+namespace CantinaV1.Services.Externals
 {
     public class CsvService
     {

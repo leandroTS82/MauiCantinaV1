@@ -1,7 +1,7 @@
 ﻿using CantinaV1.Models;
 using ClosedXML.Excel;
 
-namespace CantinaV1.Services.Internals
+namespace CantinaV1.Services.Externals
 {
     public class XlsxService
     {
