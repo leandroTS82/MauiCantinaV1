@@ -67,7 +67,7 @@
                                 TextColor="White"/>
                     </HorizontalStackLayout>
 
-                    <Label Text="Insira o número gerado e clique em salvar. Em seguida, vá para a página Balcão."
+                    <Label Text="Habilite o código e clique em salvar, Informe código para a pessoa que estará no balcão. O código é válido por 24 horas, caso queira pode gerar um novo código."
                            FontAttributes="Italic" 
                            FontSize="14" 
                            TextColor="Gray"/>
@@ -93,7 +93,7 @@
                                 TextColor="White"/>
                     </HorizontalStackLayout>
 
-                    <Label Text="O número registrado receberá os pedidos para entrega no balcão."
+                    <Label Text="Insira o código recebido, habilite o recebimento e clique em salvar, em seguida pode ir para a página \"Balcão\""
                            FontAttributes="Italic" 
                            FontSize="14" 
                            TextColor="Gray"/>
