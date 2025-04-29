@@ -22,5 +22,9 @@ namespace CantinaV1.Views
         {
             await Navigation.PushAsync(new ConfigurationPage());
         }
+        private async void GoToAdvancedSettingsPage(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AdvancedSettingsPage());
+        }
     }
 }

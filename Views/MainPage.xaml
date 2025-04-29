@@ -1,66 +1,83 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CantinaV1.Views.MainPage">
+             x:Class="CantinaV1.Views.MainPage"
+             Title="Cantina">
 
-    <VerticalStackLayout Padding="20" Spacing="20">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Avançado"
+                     IconImageSource="settings.png"
+                     Order="Primary"
+                     Priority="0"
+                     Clicked="GoToAdvancedSettingsPage" />
+    </ContentPage.ToolbarItems>
 
-        <Label Text="Bem-vindo à Cantina" 
-               FontSize="24" 
-               HorizontalOptions="Center" 
-               FontAttributes="Bold"
-               TextColor="DarkSlateBlue"/>
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24">
+            <Label Text="Bem-vindo à Cantina" 
+                   FontSize="32" 
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold"
+                   TextColor="#2C3E50" />
 
-        <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="DarkBlue">
-            <Button Text="Produtos" 
-                    FontSize="18"
-                    BackgroundColor="LightYellow"
-                    TextColor="Black"
-                    BorderColor="White"
-                    BorderWidth="2"
-                    Clicked="GoToProductsPage"/>
-        </Frame>
+            <Grid RowSpacing="20" ColumnSpacing="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="DarkRed">
-            <Button Text="Pedidos" 
-                    FontSize="18"
-                    BackgroundColor="Green"
-                    TextColor="White"
-                    BorderColor="White"
-                    BorderWidth="2"
-                    Clicked="GoToOrderPage"/>
-        </Frame>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <Frame CornerRadius="10" HasShadow="True" Padding="0" BackgroundColor="Green">
-            <Button Text="Configurações" 
-                    FontSize="18"
-                    BackgroundColor="Green" 
-                    TextColor="White"
-                    BorderColor="White"
-                    BorderWidth="2"
-                    Clicked="GoToConfigurationPage"/>
-        </Frame>
+                <Frame Grid.Row="0" BackgroundColor="#3498DB" CornerRadius="12" Padding="0" HasShadow="True">
+                    <Button Text="Produtos" 
+                            FontSize="20"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Clicked="GoToProductsPage"/>
+                </Frame>
 
-        <!-- Seção de instruções -->
-        <Frame BackgroundColor="LightGray"
-               CornerRadius="10"
-               Padding="10"
-               HasShadow="True">
-            <VerticalStackLayout Spacing="10">
-                <Label Text="Como usar a Cantina"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="Black"/>
-                <Label Text="1 - Vá em 'Produtos' e cadastre os itens que serão vendidos e seus preços."
-                       FontSize="14"
-                       TextColor="Black"/>
-                <Label Text="2 - Em 'Configurações', você pode ativar o envio de pedidos para o balcão via WhatsApp."
-                       FontSize="14"
-                       TextColor="Black"/>
-                <Label Text="3 - Em 'Pedidos', registre os pedidos com nome (alguns nomes estão pré cadastrados e aparecem quando iniciar a digitação), quantidade e forma de pagamento. No final, clique em 'Exportar' para gerar e compartilhar o relatório do caixa."
-                       FontSize="14"
-                       TextColor="Black"/>
-            </VerticalStackLayout>
-        </Frame>
+                <Frame Grid.Row="1" BackgroundColor="#E74C3C" CornerRadius="12" Padding="0" HasShadow="True">
+                    <Button Text="Pedidos" 
+                            FontSize="20"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Clicked="GoToOrderPage"/>
+                </Frame>
 
-    </VerticalStackLayout>
+                <Frame Grid.Row="2" BackgroundColor="#27AE60" CornerRadius="12" Padding="0" HasShadow="True">
+                    <Button Text="Configurações" 
+                            FontSize="20"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Clicked="GoToConfigurationPage"/>
+                </Frame>
+            </Grid>
+
+            <Frame BackgroundColor="#ECF0F1"
+                   CornerRadius="12"
+                   Padding="16"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Como usar a Cantina"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#2C3E50" />
+
+                    <Label Text="1 - Vá em 'Produtos' e cadastre os itens que serão vendidos e seus preços."
+                           FontSize="16"
+                           TextColor="#34495E" />
+
+                    <Label Text="2 - Em 'Configurações', você pode ativar o envio de pedidos para o balcão via WhatsApp."
+                           FontSize="16"
+                           TextColor="#34495E" />
+
+                    <Label Text="3 - Em 'Pedidos', registre os pedidos com nome, quantidade e forma de pagamento. No final, clique em 'Exportar' para gerar e compartilhar o relatório do caixa."
+                           FontSize="16"
+                           TextColor="#34495E" />
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
