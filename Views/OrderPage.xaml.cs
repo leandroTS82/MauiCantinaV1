@@ -201,7 +201,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         }
         else
             await DisplayAlert("Aviso", response.Message, "OK");
-    }    
+    }
 
     private async Task ExportXlsxAsync(List<OrderItem> orders)
     {
@@ -286,6 +286,14 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
                 await _database.SavePedidoAsync(item);
             }
+            var genericConfigurationServices = new GenericConfigurationServices();
+            var config = await genericConfigurationServices.GetGenericConfigurationAsync("switchSendCodeApp");
+            if (config != null && config.Value == "True")
+            {
+                FireBaseOrderServices fireBaseServices = new FireBaseOrderServices();
+                await fireBaseServices.SendOrderAsync(orderItemsToSave);
+            }
+
             WhatsAppService whatsAppService = new WhatsAppService();
             await whatsAppService.SendOrderAsync(orderItemsToSave);
 

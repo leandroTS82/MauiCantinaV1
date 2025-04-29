@@ -10,20 +10,20 @@ namespace CantinaV1.Views
         {
             InitializeComponent();
             _configService = new GenericConfigurationServices();
-            CarregarFirebaseConfigs();
+            LoadFirebaseConfigs();
         }
 
-        private async void CarregarFirebaseConfigs()
+        private async void LoadFirebaseConfigs()
         {
-            entryFirebaseApiKey.Text = await ObterValor("FirebaseApiKey");
-            entryFirebaseAuthDomain.Text = await ObterValor("FirebaseAuthDomain");
-            entryFirebaseProjectId.Text = await ObterValor("FirebaseProjectId");
-            entryFirebaseStorageBucket.Text = await ObterValor("FirebaseStorageBucket");
-            entryFirebaseMessagingSenderId.Text = await ObterValor("FirebaseMessagingSenderId");
-            entryFirebaseAppId.Text = await ObterValor("FirebaseAppId");
+            entryFirebaseApiKey.Text = await GetValue("FirebaseApiKey");
+            entryFirebaseAuthDomain.Text = await GetValue("FirebaseAuthDomain");
+            entryFirebaseProjectId.Text = await GetValue("FirebaseProjectId");
+            entryFirebaseStorageBucket.Text = await GetValue("FirebaseStorageBucket");
+            entryFirebaseMessagingSenderId.Text = await GetValue("FirebaseMessagingSenderId");
+            entryFirebaseAppId.Text = await GetValue("FirebaseAppId");
         }
 
-        private async Task<string> ObterValor(string key)
+        private async Task<string> GetValue(string key)
         {
             var config = await _configService.GetGenericConfigurationAsync(key);
             return config?.Value ?? string.Empty;
