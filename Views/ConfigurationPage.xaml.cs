@@ -1,6 +1,6 @@
 using CantinaV1.Data;
 using CantinaV1.Models;
-using CantinaV1.Services;
+using CantinaV1.Services.Internals;
 
 namespace CantinaV1.Views;
 

@@ -3,7 +3,7 @@ using CantinaV1.Data;
 using System.Diagnostics;
 using System.Text;
 
-namespace CantinaV1.Services
+namespace CantinaV1.Services.Internals
 {
     public class WhatsAppService
     {
