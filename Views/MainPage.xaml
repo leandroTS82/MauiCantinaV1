@@ -1,7 +1,8 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CantinaV1.Views.MainPage"
-             Title="Cantina">
+             Title="Cantina"
+             BackgroundColor="#F9F9F9">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Avançado"
@@ -12,80 +13,81 @@
     </ContentPage.ToolbarItems>
 
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="24">
-            <Label Text="Bem-vindo à Cantina" 
-                   FontSize="32" 
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Label Text="Bem-vindo à Cantina"
+                   FontSize="34"
                    HorizontalOptions="Center"
                    FontAttributes="Bold"
                    TextColor="#2C3E50" />
 
-            <Grid RowSpacing="10" ColumnSpacing="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <!-- Botões principais -->
+            <VerticalStackLayout Spacing="16">
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Frame Grid.Row="0" BackgroundColor="Blue" CornerRadius="12" Padding="0" HasShadow="True">
-                    <Button Text="Produtos" 
-                            FontSize="20"
+                <Frame CornerRadius="16" BackgroundColor="#3498DB" HasShadow="True" Padding="12">
+                    <Button Text="🍔 Produtos"
+                            FontSize="22"
                             BackgroundColor="Transparent"
                             TextColor="White"
-                            Clicked="GoToProductsPage"/>
+                            Clicked="GoToProductsPage" />
                 </Frame>
 
-                <Frame Grid.Row="1" BackgroundColor="Blue" CornerRadius="12" Padding="0" HasShadow="True">
-                    <Button Text="Pedidos" 
-                            FontSize="20"
+                <Frame CornerRadius="16" BackgroundColor="#2980B9" HasShadow="True" Padding="12">
+                    <Button Text="📝 Pedidos"
+                            FontSize="22"
                             BackgroundColor="Transparent"
                             TextColor="White"
-                            Clicked="GoToOrderPage"/>
+                            Clicked="GoToOrderPage" />
                 </Frame>
-                <Frame Grid.Row="2" BackgroundColor="Blue" CornerRadius="12" Padding="0" HasShadow="True">
-                    <Button Text="Painel de pedidos recebidos" 
-                        Clicked="OnRedirectReceivedOrdersPageClicked" 
-                        FontSize="20"
-                        BackgroundColor="Transparent"
-                        TextColor="White"/>
-                </Frame>
-                <Frame Grid.Row="3" BackgroundColor="AliceBlue" CornerRadius="12" Padding="0" HasShadow="True">
-                    <Button Text="Configurações" 
-                            FontSize="20"
+
+                <Frame CornerRadius="16" BackgroundColor="#1ABC9C" HasShadow="True" Padding="12">
+                    <Button Text="📦 Painel de pedidos recebidos"
+                            FontSize="22"
                             BackgroundColor="Transparent"
-                            TextColor="Black"
-                            Clicked="GoToConfigurationPage"/>
+                            TextColor="White"
+                            Clicked="OnRedirectReceivedOrdersPageClicked" />
                 </Frame>
 
-            </Grid>
+                <Frame CornerRadius="16" BackgroundColor="#ECF0F1" HasShadow="True" Padding="12">
+                    <Button Text="⚙️ Configurações"
+                            FontSize="22"
+                            BackgroundColor="Transparent"
+                            TextColor="#2C3E50"
+                            Clicked="GoToConfigurationPage" />
+                </Frame>
 
-            <Frame BackgroundColor="#ECF0F1"
-                   CornerRadius="12"
-                   Padding="16"
-                   HasShadow="True">
+            </VerticalStackLayout>
+
+            <!-- Instruções de uso -->
+            <Frame BackgroundColor="White"
+                   CornerRadius="16"
+                   Padding="20"
+                   HasShadow="True"
+                   BorderColor="#D0D3D4">
                 <VerticalStackLayout Spacing="12">
                     <Label Text="Como usar a Cantina"
-                           FontSize="20"
+                           FontSize="22"
                            FontAttributes="Bold"
                            TextColor="#2C3E50" />
 
                     <Label Text="1 - Vá em 'Produtos' e cadastre os itens que serão vendidos e seus preços."
                            FontSize="16"
-                           TextColor="#34495E" />
+                           TextColor="#555" />
 
-                    <Label Text="2 - Em 'Configurações', você pode ativar o envio de pedidos para o balcão via WhatsApp."
+                    <Label Text="2 - Em 'Pedidos', registre os pedidos com nome, quantidade e forma de pagamento. No final, clique em 'Exportar' para gerar e compartilhar o relatório do caixa."
                            FontSize="16"
-                           TextColor="#34495E" />
+                           TextColor="#555" />
 
-                    <Label Text="3 - Em 'Pedidos', registre os pedidos com nome, quantidade e forma de pagamento. No final, clique em 'Exportar' para gerar e compartilhar o relatório do caixa."
+                    <Label Text="3 - Em 'Painel de pedidos recebidos', é possível receber os pedidos feitos pelo caixa. Isso precisa ser ajustado nas configurações."
                            FontSize="16"
-                           TextColor="#34495E" />
+                           TextColor="#555" />
+
+                    <Label Text="4 - Em 'Configurações', você pode ativar o envio de pedidos para o balcão via APP ou WhatsApp."
+                           FontSize="16"
+                           TextColor="#555" />
                 </VerticalStackLayout>
             </Frame>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
