@@ -5,6 +5,7 @@
         public string ClientName { get; set; }
         public List<ProductToOrder> Products { get; set; }
         public string Created { get; set; }
+        public string Id { get; internal set; }
     }
     public class ProductToOrder
     {

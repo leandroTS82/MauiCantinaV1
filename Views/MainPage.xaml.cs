@@ -26,5 +26,10 @@ namespace CantinaV1.Views
         {
             await Navigation.PushAsync(new AdvancedSettingsPage());
         }
+
+        private async void OnRedirectReceivedOrdersPageClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ReceivedOrdersPage());
+        }
     }
 }

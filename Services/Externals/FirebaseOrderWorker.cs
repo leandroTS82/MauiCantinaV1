@@ -20,14 +20,19 @@ namespace CantinaV1.Services.Externals
 
         public async Task StartListeningAsync()
         {
+            if (_subscription != null)
+                return; // já está ouvindo
+
             var switchReceiveCodeApp = await _configService.GetGenericConfigurationAsync("switchReceiveCodeApp");
             if (switchReceiveCodeApp == null || !bool.TryParse(switchReceiveCodeApp.Value, out bool isEnabled) || !isEnabled)
                 return;
 
-
             string? firebaseUrl = await _configService.GetGenericConfigurationAsync("FirebaseAuthDomain") is { } config && !string.IsNullOrEmpty(config.Value)
                 ? config.Value
                 : null;
+
+            // url fixada para testes
+            firebaseUrl = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
 
             string? orderKey = await _configService.GetGenericConfigurationAsync("entryRegisterCodeApp") is { } key && !string.IsNullOrEmpty(key.Value)
                 ? key.Value
@@ -39,16 +44,23 @@ namespace CantinaV1.Services.Externals
             _firebaseClient = new FirebaseClient(firebaseUrl);
 
             _subscription = _firebaseClient
-                .Child(orderKey)
-                .AsObservable<OrderToSend>()
-                .Subscribe(async data =>
-                {
-                    if (data.Object != null)
-                    {
-                        var allOrders = await GetAllOrders(orderKey);
-                        OrdersUpdated?.Invoke(this, allOrders);
-                    }
-                });
+                            .Child(orderKey)
+                            .AsObservable<OrderToSend>()
+                            .Where(f => f.EventType == Firebase.Database.Streaming.FirebaseEventType.InsertOrUpdate)
+                            .Subscribe(async data =>
+                            {
+                                if (data.Object != null)
+                                {
+                                    var allOrders = await GetAllOrders(orderKey);
+                                    OrdersUpdated?.Invoke(this, allOrders);
+                                }
+                            });
+        }
+
+        public void StopListening()
+        {
+            _subscription?.Dispose();
+            _subscription = null; // Permite nova inscrição no futuro
         }
 
         private async Task<List<OrderToSend>> GetAllOrders(string orderKey)
@@ -57,12 +69,8 @@ namespace CantinaV1.Services.Externals
                 .Child(orderKey)
                 .OnceAsync<OrderToSend>();
 
-            return orders.Select(o => o.Object).ToList();
-        }
-
-        public void StopListening()
-        {
-            _subscription?.Dispose();
+            var listOrders = orders.Select(o => o.Object).ToList();
+            return listOrders;
         }
     }
 }

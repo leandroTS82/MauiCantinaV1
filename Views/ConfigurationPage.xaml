@@ -92,6 +92,13 @@
                                 BackgroundColor="#2196F3" 
                                 TextColor="White"/>
                     </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <Button Text="Ir para página de pedidos recebidos" 
+                                Clicked="OnRedirectReceivedOrdersPageClicked" 
+                                WidthRequest="120" 
+                                BackgroundColor="LightGreen" 
+                                TextColor="DarkGreen"/>
+                    </HorizontalStackLayout>
 
                     <Label Text="Insira o código recebido, habilite o recebimento e clique em salvar, em seguida pode ir para a página Balcão"
                            FontAttributes="Italic" 

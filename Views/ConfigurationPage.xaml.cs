@@ -143,4 +143,9 @@ public partial class ConfigurationPage : ContentPage
 
         await DisplayAlert("Sucesso", "Configuração salva com sucesso!", "OK");
     }
+
+    private async void OnRedirectReceivedOrdersPageClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new ReceivedOrdersPage());
+    }
 }

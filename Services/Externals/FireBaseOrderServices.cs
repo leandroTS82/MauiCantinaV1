@@ -14,11 +14,6 @@ namespace CantinaV1.Services.Externals
             _genericConfigurationServices = new GenericConfigurationServices();
         }
 
-        private async Task<string> GetValue(string key)
-        {
-            var config = await _genericConfigurationServices.GetGenericConfigurationAsync(key);
-            return config?.Value ?? string.Empty;
-        }
 
         public async Task SendOrderAsync(List<OrderItem> orderItemsToSave)
         {
@@ -46,7 +41,7 @@ namespace CantinaV1.Services.Externals
                 })
                 .ToList();
 
-            var pedido = new OrderToSend
+            var orderToSend = new OrderToSend
             {
                 ClientName = clientName,
                 Products = productsOrder,
@@ -55,7 +50,42 @@ namespace CantinaV1.Services.Externals
 
             await _firebaseClient
                 .Child(orderKey)
-                .PostAsync(pedido);
+                .PostAsync(orderToSend);
         }
-    }    
+
+        internal async Task<List<OrderToSend>> BuscarPedidosPorOrderKeyAsync(string orderKey)
+        {
+            List<OrderToSend> orders = new List<OrderToSend>();
+            string fireBaseUrlDb = await GetValue("FirebaseAuthDomain");
+            fireBaseUrlDb = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
+            if (string.IsNullOrWhiteSpace(fireBaseUrlDb))
+                return orders;
+
+            FirebaseClient _firebaseClient = new FirebaseClient(fireBaseUrlDb);
+            var firebaseOrders = await _firebaseClient
+                .Child(orderKey)
+                .OnceAsync<OrderToSend>();
+            foreach (var firebaseOrder in firebaseOrders)
+            {
+                if (firebaseOrder.Object != null)
+                {
+                    var order = firebaseOrder.Object;
+                    order.Id = firebaseOrder.Key; // Adiciona o ID do pedido
+                    orders.Add(order);
+                }
+            }
+
+            return orders;
+        }
+
+
+
+        #region InternalMethods
+        private async Task<string> GetValue(string key)
+        {
+            var config = await _genericConfigurationServices.GetGenericConfigurationAsync(key);
+            return config?.Value ?? string.Empty;
+        }
+        #endregion
+    }
 }

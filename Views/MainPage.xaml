@@ -19,8 +19,9 @@
                    FontAttributes="Bold"
                    TextColor="#2C3E50" />
 
-            <Grid RowSpacing="20" ColumnSpacing="20">
+            <Grid RowSpacing="10" ColumnSpacing="20">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -30,7 +31,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Frame Grid.Row="0" BackgroundColor="#3498DB" CornerRadius="12" Padding="0" HasShadow="True">
+                <Frame Grid.Row="0" BackgroundColor="Blue" CornerRadius="12" Padding="0" HasShadow="True">
                     <Button Text="Produtos" 
                             FontSize="20"
                             BackgroundColor="Transparent"
@@ -38,21 +39,28 @@
                             Clicked="GoToProductsPage"/>
                 </Frame>
 
-                <Frame Grid.Row="1" BackgroundColor="#E74C3C" CornerRadius="12" Padding="0" HasShadow="True">
+                <Frame Grid.Row="1" BackgroundColor="Blue" CornerRadius="12" Padding="0" HasShadow="True">
                     <Button Text="Pedidos" 
                             FontSize="20"
                             BackgroundColor="Transparent"
                             TextColor="White"
                             Clicked="GoToOrderPage"/>
                 </Frame>
-
-                <Frame Grid.Row="2" BackgroundColor="#27AE60" CornerRadius="12" Padding="0" HasShadow="True">
+                <Frame Grid.Row="2" BackgroundColor="Blue" CornerRadius="12" Padding="0" HasShadow="True">
+                    <Button Text="Painel de pedidos recebidos" 
+                        Clicked="OnRedirectReceivedOrdersPageClicked" 
+                        FontSize="20"
+                        BackgroundColor="Transparent"
+                        TextColor="White"/>
+                </Frame>
+                <Frame Grid.Row="3" BackgroundColor="AliceBlue" CornerRadius="12" Padding="0" HasShadow="True">
                     <Button Text="Configurações" 
                             FontSize="20"
                             BackgroundColor="Transparent"
-                            TextColor="White"
+                            TextColor="Black"
                             Clicked="GoToConfigurationPage"/>
                 </Frame>
+
             </Grid>
 
             <Frame BackgroundColor="#ECF0F1"
