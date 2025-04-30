@@ -2,7 +2,6 @@ using CantinaV1.Models;
 using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace CantinaV1.Views
 {
