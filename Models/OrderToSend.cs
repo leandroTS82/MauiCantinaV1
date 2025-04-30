@@ -6,6 +6,7 @@
         public List<ProductToOrder> Products { get; set; }
         public string Created { get; set; }
         public string Id { get; internal set; }
+        public bool IsSelected { get; set; }
     }
     public class ProductToOrder
     {

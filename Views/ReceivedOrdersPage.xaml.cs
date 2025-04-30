@@ -27,7 +27,13 @@ namespace CantinaV1.Views
         private async Task IniciaOrders()
         {
             var firebaseOrder = new FireBaseOrderServices();
-            var result = await firebaseOrder.BuscarPedidosPorOrderKeyAsync("entryRegisterCodeApp");
+            var switchReceiveCodeApp = await _configService.GetGenericConfigurationAsync("switchReceiveCodeApp");
+            if (switchReceiveCodeApp == null || !bool.TryParse(switchReceiveCodeApp.Value, out bool isEnabled) || !isEnabled)
+                return;
+            var orderKey = await _configService.GetGenericConfigurationAsync("entryRegisterCodeApp");
+            if (orderKey == null || string.IsNullOrEmpty(orderKey.Value))
+                return;
+            var result = await firebaseOrder.BuscarPedidosPorOrderKeyAsync(orderKey.Value);
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -35,6 +41,24 @@ namespace CantinaV1.Views
                 foreach (var order in result)
                     Orders.Add(order);
             });
+        }
+
+        private void OnOrderTapped(object sender, TappedEventArgs e)
+        {
+            if (sender is Frame frame && frame.BindingContext is OrderToSend tappedOrder)
+            {
+                // Alterna o estado
+                tappedOrder.IsSelected = !tappedOrder.IsSelected;
+
+                // Remove da posição atual
+                Orders.Remove(tappedOrder);
+
+                // Adiciona no topo ou fim
+                if (tappedOrder.IsSelected)
+                    Orders.Insert(0, tappedOrder); // Verde => vai pro topo
+                else
+                    Orders.Add(tappedOrder); // Amarelo => vai pro fim
+            }
         }
 
         protected override async void OnAppearing()
@@ -51,8 +75,8 @@ namespace CantinaV1.Views
                     try
                     {
                         Orders.Clear();
-                        _orders = orders;
-                        foreach (var order in orders)
+                        // Inverte a lista para mostrar o último pedido no topo
+                        foreach (var order in orders.AsEnumerable().Reverse())
                             Orders.Add(order);
                     }
                     catch (Exception ex)
