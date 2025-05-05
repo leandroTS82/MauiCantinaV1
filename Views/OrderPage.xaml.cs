@@ -310,6 +310,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async Task LoadSavedOrders()
     {
+        _savedOrders.Clear(); // Limpa a lista atual de pedidos
         var savedOrders = await _database.GetPedidosAsync(); // Recupera os pedidos do banco de dados
 
         // Agrupar os pedidos por ClientName e somar os Totais

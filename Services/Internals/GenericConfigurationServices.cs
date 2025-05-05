@@ -14,6 +14,23 @@ namespace CantinaV1.Services.Internals
             _database = new Database(dbPath);
         }
 
+        internal async Task<bool> DisableExpiredCodeAppFeatures()
+        {
+            var disabled = false;
+            var codeAppLimit = await GetGenericConfigurationAsync("CodeAppLimit");
+            if (DateTime.TryParse(codeAppLimit?.Value, out var codeAppLimitDate) && codeAppLimitDate < DateTime.Now)
+            {
+                await SaveOrUpdateGenericConfiguration("switchSendCodeApp", "false");
+                await SaveOrUpdateGenericConfiguration("switchReceiveCodeApp", "false");
+                await SaveOrUpdateGenericConfiguration("CodeAppLimit", string.Empty);
+                await SaveOrUpdateGenericConfiguration("CodeApp", string.Empty);
+                await SaveOrUpdateGenericConfiguration("entryRegisterCodeApp", string.Empty);
+
+                disabled = true;
+            }
+            return disabled;
+        }
+
         internal async Task<GenericConfiguration?> GetGenericConfigurationAsync(string key)
         {
             var genericConfig = await _database.GetGenericConfigurationAsync();

@@ -36,39 +36,8 @@ public partial class ConfigurationPage : ContentPage
     private async void LoadCodeAppInit()
     {
 
-        var codeAppLimit = await _genericConfigurationServices.GetGenericConfigurationAsync("CodeAppLimit");
-
-        if (codeAppLimit != null)
-        {
-            var codeAppLimitDate = Convert.ToDateTime(codeAppLimit.Value);
-            if (codeAppLimitDate < DateTime.Now)
-            {
-                entryCodeApp.Text = $"{RandomNumber()}{RandomNumber()}";
-                switchReceiveCodeApp.IsToggled = false;
-                switchSendCodeApp.IsToggled = false;
-                await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchSendCodeApp", switchSendCodeApp.IsToggled.ToString());
-                await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchReceiveCodeApp", switchReceiveCodeApp.IsToggled.ToString());
-                await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("CodeAppLimit", string.Empty);
-                await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("CodeApp", string.Empty);
-            }
-            else
-            {
-                var codeApp = await _genericConfigurationServices.GetGenericConfigurationAsync("CodeApp");
-                var registerCodeApp = await _genericConfigurationServices.GetGenericConfigurationAsync("entryRegisterCodeApp");
-                var switchSendCodeAppConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("switchSendCodeApp");
-                var switchReceiveCodeAppConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("switchReceiveCodeApp");
-
-                if (codeApp != null)
-                    entryCodeApp.Text = codeApp.Value;
-                if (registerCodeApp != null)
-                    entryRegisterCodeApp.Text = registerCodeApp.Value;
-                if (switchSendCodeAppConfig != null)
-                    switchSendCodeApp.IsToggled = Convert.ToBoolean(switchSendCodeAppConfig.Value);
-                if (switchReceiveCodeAppConfig != null)
-                    switchReceiveCodeApp.IsToggled = Convert.ToBoolean(switchReceiveCodeAppConfig.Value);
-            }
-        }
-        else
+        var disabled = await _genericConfigurationServices.DisableExpiredCodeAppFeatures();
+        if (disabled)
         {
             entryCodeApp.Text = $"{RandomNumber()}{RandomNumber()}";
             switchReceiveCodeApp.IsToggled = false;
@@ -76,6 +45,22 @@ public partial class ConfigurationPage : ContentPage
             await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchSendCodeApp", switchSendCodeApp.IsToggled.ToString());
             await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchReceiveCodeApp", switchReceiveCodeApp.IsToggled.ToString());
         }
+        else
+        {
+            var codeApp = await _genericConfigurationServices.GetGenericConfigurationAsync("CodeApp");
+            var registerCodeApp = await _genericConfigurationServices.GetGenericConfigurationAsync("entryRegisterCodeApp");
+            var switchSendCodeAppConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("switchSendCodeApp");
+            var switchReceiveCodeAppConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("switchReceiveCodeApp");
+
+            if (codeApp != null)
+                entryCodeApp.Text = codeApp.Value;
+            if (registerCodeApp != null)
+                entryRegisterCodeApp.Text = registerCodeApp.Value;
+            if (switchSendCodeAppConfig != null)
+                switchSendCodeApp.IsToggled = Convert.ToBoolean(switchSendCodeAppConfig.Value);
+            if (switchReceiveCodeAppConfig != null)
+                switchReceiveCodeApp.IsToggled = Convert.ToBoolean(switchReceiveCodeAppConfig.Value);
+        }           
     }
 
     private int RandomNumber()

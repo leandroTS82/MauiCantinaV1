@@ -23,36 +23,20 @@
                 <toolkit:Expander.Content>
                     <Frame Padding="15" CornerRadius="10" BackgroundColor="#F5F5F5">
                         <VerticalStackLayout Spacing="15">
-                            <!-- 
-                            <Entry x:Name="entryFirebaseProjectId"
-                                   Placeholder="Project ID"
-                                   Text="{Binding FirebaseProjectId}" />
-
-                            <Entry x:Name="entryFirebaseStorageBucket"
-                                   Placeholder="Storage Bucket"
-                                   Text="{Binding FirebaseStorageBucket}" />
-
-                            <Entry x:Name="entryFirebaseMessagingSenderId"
-                                   Placeholder="Messaging Sender ID"
-                                   Text="{Binding FirebaseMessagingSenderId}" />
-
-                            <Entry x:Name="entryFirebaseAppId"
-                                   Placeholder="App ID"
-                                   Text="{Binding FirebaseAppId}" />
-                            -->
-                            <Entry x:Name="entryFirebaseApiKey"
-                                   Placeholder="API Key"
-                                   Text="{Binding FirebaseApiKey}" />
-                            
                             <Entry x:Name="entryFirebaseAuthDomain"
-                                    Placeholder="Auth Domain"
-                                    Text="{Binding FirebaseAuthDomain}" />
-                            <Button Text="Salvar"
+                                   Placeholder="Auth Domain"
+                                   Text="{Binding FirebaseAuthDomain}" />
+                                                <Label Text="Acesso via URL direta ao Firebase (sem autenticação por SDK) considere isso ao configurar seu Firebase"
+                                   FontSize="12"
+                                   TextColor="Gray" />
+
+                                                <Button Text="Salvar"
                                     BackgroundColor="#2196F3"
                                     TextColor="White"
                                     Clicked="OnSalvarFirebaseClicked" />
                         </VerticalStackLayout>
                     </Frame>
+
                 </toolkit:Expander.Content>
             </toolkit:Expander>
 
