@@ -15,12 +15,7 @@ namespace CantinaV1.Views
 
         private async void LoadFirebaseConfigs()
         {
-            entryFirebaseApiKey.Text = await GetValue("FirebaseApiKey");
             entryFirebaseAuthDomain.Text = await GetValue("FirebaseAuthDomain");
-            //entryFirebaseProjectId.Text = await GetValue("FirebaseProjectId");
-            //entryFirebaseStorageBucket.Text = await GetValue("FirebaseStorageBucket");
-            //entryFirebaseMessagingSenderId.Text = await GetValue("FirebaseMessagingSenderId");
-            //entryFirebaseAppId.Text = await GetValue("FirebaseAppId");
         }
 
         private async Task<string> GetValue(string key)
@@ -32,12 +27,6 @@ namespace CantinaV1.Views
         private async void OnSalvarFirebaseClicked(object sender, EventArgs e)
         {
             await Salvar("FirebaseAuthDomain", entryFirebaseAuthDomain.Text);
-            await Salvar("FirebaseApiKey", entryFirebaseApiKey.Text);
-            //await Salvar("FirebaseProjectId", entryFirebaseProjectId.Text);
-            //await Salvar("FirebaseStorageBucket", entryFirebaseStorageBucket.Text);
-            //await Salvar("FirebaseMessagingSenderId", entryFirebaseMessagingSenderId.Text);
-            //await Salvar("FirebaseAppId", entryFirebaseAppId.Text);
-
             await DisplayAlert("Sucesso", "Configurações Firebase salvas.", "OK");
         }
 
