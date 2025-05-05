@@ -138,8 +138,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             await _database.DeleteOrderItemAsync(orderItem);
         }
 
-        await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos.", "OK");
-        Inicializar();
+        await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos, você será direcionado a página principal.", "OK");
+        await Navigation.PushAsync(new MainPage());
     }
     private async void Inicializar()
     {
