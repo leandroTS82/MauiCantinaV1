@@ -33,26 +33,26 @@ namespace CantinaV1.Services.Internals
 
         internal async Task<GenericConfiguration?> GetGenericConfigurationAsync(string key)
         {
-            var genericConfig = await _database.GetGenericConfigurationAsync();
+            var genericConfig = await _database.GetAllAsync<GenericConfiguration>();
             return genericConfig.FirstOrDefault(x => x.Key == key);
         }
         internal async Task SaveOrUpdateGenericConfiguration(string key, string value)
         {
-            var config = await GetGenericConfigurationAsync(key);
+            GenericConfiguration? config = await GetGenericConfigurationAsync(key);
             if (config != null)
             {
                 config.Value = value;
-                await _database.UpdateGenericConfigurationoAsync(config);
+                await _database.UpdateAsync<GenericConfiguration>(config);
                 return;
             }
             else
             {
-                var newConfig = new GenericConfiguration
+                GenericConfiguration? newConfig = new GenericConfiguration
                 {
                     Key = key,
                     Value = value
                 };
-                await _database.SaveGenericConfigurationAsync(newConfig);
+                await _database.InsertAsync<GenericConfiguration>(newConfig);
             }
         }
 

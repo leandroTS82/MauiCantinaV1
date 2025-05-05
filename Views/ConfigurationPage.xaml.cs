@@ -22,13 +22,17 @@ public partial class ConfigurationPage : ContentPage
 
     private async void CarregarConfiguracao()
     {
-        var config = await _database.GetConfiguracaoAsync();
-        if (config != null)
-        {
-            entryDDD.Text = config.DDD;
-            entryTelefone.Text = config.Telefone;
-            switchHabilitado.IsToggled = config.ReceberPedidos;
-        }
+        var ddd = await _genericConfigurationServices.GetGenericConfigurationAsync("entryDDD");
+        if (ddd == null) return;
+        entryDDD.Text = ddd.Value;
+
+        var telefone = await _genericConfigurationServices.GetGenericConfigurationAsync("entryTelefone");
+        if (telefone == null) return;
+        entryTelefone.Text = telefone.Value;
+
+        var switchWhatsHabilitado = await _genericConfigurationServices.GetGenericConfigurationAsync("switchHabilitado");
+        if (switchHabilitado != null)
+            switchHabilitado.IsToggled = Convert.ToBoolean(switchWhatsHabilitado.Value);       
 
         LoadCodeAppInit();
     }
@@ -84,14 +88,11 @@ public partial class ConfigurationPage : ContentPage
             return;
         }
 
-        var config = new Configuration
-        {
-            DDD = entryDDD.Text,
-            Telefone = entryTelefone.Text,
-            ReceberPedidos = switchHabilitado.IsToggled
-        };
+        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryDDD", entryDDD.Text);
+        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryTelefone", entryTelefone.Text);
+        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchHabilitado", switchHabilitado.IsToggled.ToString());
 
-        await _database.SaveConfiguracaoAsync(config);
+        //await _database.SaveConfiguracaoAsync(config);
         await DisplayAlert("Sucesso", "Configuração salva com sucesso!", "OK");
     }
 

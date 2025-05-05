@@ -56,11 +56,12 @@
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                 <Button Text="Registrar Pedido" Clicked="OnSaveOrderClicked"/>
                 <Button Text="Exportar" Clicked="OnExportClicked"/>
-                <Button Text="Limpar" TextColor="White" BackgroundColor="Red" Clicked="OnClearOrdersClicked"/>
+                <Button Text="Limpar" TextColor="White" BackgroundColor="Red" Clicked="OnClearAllOrdersClicked"/>
             </HorizontalStackLayout>
 
             <!-- Lista de pedidos -->
-            <ListView x:Name="OrdersListView">
+            <ListView x:Name="OrdersListView"
+                      ItemsSource="{Binding OrderItems}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

@@ -1,28 +1,50 @@
-﻿using CantinaV1.Data;
-using CantinaV1.Models;
+﻿using CantinaV1.Models;
 using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 
 namespace CantinaV1.Views;
 
 public partial class OrderPage : ContentPage, INotifyPropertyChanged
 {
-    private readonly Database _database;
     private List<Product> _product;
     private string _clientName;
     private string _paymentMethod;
-    private List<OrderItem> _orderItems;
-    // Lista para armazenar os pedidos
-    private ObservableCollection<OrderItem> _savedOrders = new ObservableCollection<OrderItem>();
     private List<string> _clients = new List<string>();
+    private List<OrderItem> _orderItems;
     public ObservableCollection<string> FilteredClients { get; set; } = new();
+    // Lista para armazenar os pedidos
+    public ObservableCollection<OrderItem> OrderItems { get; set; } = new ObservableCollection<OrderItem>();
+    private readonly OrdersService _ordersService;
+    private readonly ProductsService _productsService;
+    private readonly CopyContentService _copyContentService;
+    private readonly XlsxService _exportXlsxService;
 
+    public OrderPage()
+    {
+        InitializeComponent();
+        BindingContext = this;
 
+        _ordersService = new OrdersService();
+        _productsService = new ProductsService();
+        _copyContentService = new CopyContentService();
+        _exportXlsxService = new XlsxService();
+
+        Inicializar();
+        LoadClientsFromJson();
+    }
+    private async void Inicializar()
+    {
+        await LoadOrderItemProducts();
+        await LoadSavedOrders(); // Carrega os pedidos salvos
+        entryClientName.Text = string.Empty;
+        UnCheckRadiosPaymentMethod();
+
+    }
+    
     public string ClientName
     {
         get => _clientName;
@@ -65,23 +87,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             _paymentMethod = value;
             OnPropertyChanged();
         }
-    }
-
-    public OrderPage()
-    {
-        InitializeComponent();
-        BindingContext = this;
-
-        string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "cantina.db4");
-        _database = new Database(dbPath);
-        // Vincula a lista de pedidos ao ListView
-        OrdersListView.ItemsSource = _savedOrders;
-
-        Inicializar();
-        BindingContext = this;
-        LoadClientsFromJson();
-    }
+    }    
 
     private async void LoadClientsFromJson()
     {
@@ -129,27 +135,14 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         }
     }
 
-    private async void OnClearOrdersClicked(object sender, EventArgs e)
+    private async void OnClearAllOrdersClicked(object sender, EventArgs e)
     {
-        var orderItems = await _database.GetPedidosAsync();
-
-        foreach (var orderItem in orderItems)
-        {
-            await _database.DeleteOrderItemAsync(orderItem);
-        }
-
-        await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos, você será direcionado a página principal.", "OK");
+        await _ordersService.DeleteAllAsync();
+        await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos.", "OK");
+        // ação temporária
         await Navigation.PushAsync(new MainPage());
     }
-    private async void Inicializar()
-    {
-        await LoadOrderItemProducts();
-        await LoadSavedOrders(); // Carrega os pedidos salvos
-        entryClientName.Text = string.Empty;
-        UnCheckRadiosPaymentMethod();
-
-    }
-
+   
     private void UnCheckRadiosPaymentMethod()
     {
         // Desmarca os RadioButtons
@@ -168,8 +161,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
                                          "📋 Copiar relatório em texto");
 
 
-            var orders = await _database.GetPedidosAsync();
-            var products = await _database.GetProdutosAsync();
+            var orders = await _ordersService.GetAllAsync();
+            var products = await _productsService.GetAllAsync();
 
             switch (action)
             {
@@ -192,9 +185,8 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     }
 
     private async Task CopyReportTextAsync(List<OrderItem> orders, List<Product> products)
-    {
-        CopyContentService copyContentService = new CopyContentService();
-        ResponseModel response = await copyContentService.CopyReportTextAsync(orders, products);
+    {        
+        ResponseModel response = await _copyContentService.CopyReportTextAsync(orders, products);
         if (response.StatusCode == 200)
         {
             await DisplayAlert("Sucesso", response.Message, "OK");
@@ -205,8 +197,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async Task ExportXlsxAsync(List<OrderItem> orders)
     {
-        XlsxService exportXlsxService = new XlsxService();
-        var response = await exportXlsxService.ExportOrdersToXlsxAsync(orders);
+        var response = await _exportXlsxService.ExportOrdersToXlsxAsync(orders);
         if (response.StatusCode == 200)
         {
             await DisplayAlert("Sucesso", response.Message, "OK");
@@ -217,15 +208,15 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async Task LoadOrderItemProducts()
     {
-        _product = await _database.GetProdutosAsync();
-        _orderItems = MappProductOrders(_product);
+        _product = await _productsService.GetAllAsync();
+        _orderItems = MapProductOrders(_product);
         listProdutos.ItemsSource = _orderItems;
 
         // Calcular o total do pedido quando os produtos forem carregados
         UpdateTotalPedido();
     }
 
-    private List<OrderItem> MappProductOrders(List<Product> products)
+    private List<OrderItem> MapProductOrders(List<Product> products)
     {
         List<OrderItem> orderItems = new List<OrderItem>();
         foreach (var product in products)
@@ -266,87 +257,104 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async void OnSaveOrderClicked(object sender, EventArgs e)
     {
-        // Verificar se os campos obrigatórios estão preenchidos
-        if (string.IsNullOrEmpty(ClientName) || string.IsNullOrEmpty(PaymentMethod))
+        try
         {
-            await DisplayAlert("Erro", "O nome do cliente e o método de pagamento são obrigatórios.", "OK");
-            return;
-        }
-
-        // Criar uma lista de OrderItem com os produtos que possuem quantidade > 0
-        var orderItemsToSave = _orderItems.Where(item => item.Quantity > 0).ToList();
-
-        if (orderItemsToSave.Any())
-        {
-            // Salvar cada item no banco de dados
-            foreach (var item in orderItemsToSave)
+            // Verificar se os campos obrigatórios estão preenchidos
+            if (string.IsNullOrEmpty(ClientName) || string.IsNullOrEmpty(PaymentMethod))
             {
-                item.ClientName = ClientName;
-                item.PaymentMethod = PaymentMethod;
-
-                await _database.SavePedidoAsync(item);
-            }
-            var genericConfigurationServices = new GenericConfigurationServices();
-            var config = await genericConfigurationServices.GetGenericConfigurationAsync("switchSendCodeApp");
-            if (config != null && config.Value == "True")
-            {
-                FireBaseOrderServices fireBaseServices = new FireBaseOrderServices();
-                await fireBaseServices.SendOrderAsync(orderItemsToSave);
+                await DisplayAlert("Erro", "O nome do cliente e o método de pagamento são obrigatórios.", "OK");
+                return;
             }
 
-            WhatsAppService whatsAppService = new WhatsAppService();
-            await whatsAppService.SendOrderAsync(orderItemsToSave);
+            // Criar uma lista de OrderItem com os produtos que possuem quantidade > 0
+            var orderItemsToSave = _orderItems.Where(item => item.Quantity > 0).ToList();
 
-            // Mostrar uma mensagem de confirmação para o usuário
-            await DisplayAlert("Pedido", "Pedido salvo com sucesso!", "OK");
+            if (orderItemsToSave.Any())
+            {
+                // Salvar cada item no banco de dados
+                foreach (var item in orderItemsToSave)
+                {
+                    item.ClientName = ClientName;
+                    item.PaymentMethod = PaymentMethod;
 
-            Inicializar();
+                    await _ordersService.SaveItemAsync(item);
+                }
+                var genericConfigurationServices = new GenericConfigurationServices();
+                var config = await genericConfigurationServices.GetGenericConfigurationAsync("switchSendCodeApp");
+                if (config != null && config.Value == "True")
+                {
+                    FireBaseOrderServices fireBaseServices = new FireBaseOrderServices();
+                    await fireBaseServices.SendOrderAsync(orderItemsToSave);
+                }
+
+                WhatsAppService whatsAppService = new WhatsAppService();
+                await whatsAppService.SendOrderAsync(orderItemsToSave);
+
+                // Mostrar uma mensagem de confirmação para o usuário
+                await DisplayAlert("Pedido", "Pedido salvo com sucesso!", "OK");
+
+                Inicializar();
+            }
+            else
+            {
+                await DisplayAlert("Erro", "Por favor, adicione produtos ao pedido.", "OK");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await DisplayAlert("Erro", "Por favor, adicione produtos ao pedido.", "OK");
+            throw;
         }
     }
 
     private async Task LoadSavedOrders()
     {
-        _savedOrders.Clear(); // Limpa a lista atual de pedidos
-        var savedOrders = await _database.GetPedidosAsync(); // Recupera os pedidos do banco de dados
-
-        // Agrupar os pedidos por ClientName e somar os Totais
-        var groupedOrders = savedOrders
-            .GroupBy(order => order.ClientName)
-            .Select(group => new
-            {
-                ClientName = group.Key,
-                PaymentMethod = group.First().PaymentMethod,
-                TotalSum = group.Sum(order => order.Total)
-            })
-            .ToList();
-
-        foreach (var groupedOrder in groupedOrders)
+        try
         {
-            // Verifica se o pedido já existe na lista
-            var existingOrder = _savedOrders.FirstOrDefault(o => o.ClientName == groupedOrder.ClientName);
-
-            if (existingOrder == null)
+            var savedOrders = await _ordersService.GetAllAsync();
+            if (savedOrders == null || !savedOrders.Any())
             {
-                // Adiciona novo pedido se não existir
-                _savedOrders.Add(new OrderItem
-                {
-                    ClientName = groupedOrder.ClientName,
-                    PaymentMethod = groupedOrder.PaymentMethod,
-                    TotalSum = groupedOrder.TotalSum
-                });
+                await DisplayAlert("Aviso", "Nenhum pedido encontrado.", "OK");
+                return;
             }
-            else
+
+            // Agrupar os pedidos por ClientName e somar os Totais
+            var groupedOrders = savedOrders
+                .GroupBy(order => order.ClientName)
+                .Select(group => new
+                {
+                    ClientName = group.Key,
+                    PaymentMethod = group.First().PaymentMethod,
+                    TotalSum = group.Sum(order => order.Total)
+                })
+                .ToList();
+            
+            foreach (var groupedOrder in groupedOrders)
             {
-                // Atualiza o TotalSum se o pedido já existir
-                existingOrder.TotalSum = groupedOrder.TotalSum;
+                // Verifica se o pedido já existe na lista
+                var existingOrder = OrderItems.FirstOrDefault(o => o.ClientName == groupedOrder.ClientName);
+
+                if (existingOrder == null)
+                {
+                    // Adiciona novo pedido se não existir
+                    OrderItems.Add(new OrderItem
+                    {
+                        ClientName = groupedOrder.ClientName,
+                        PaymentMethod = groupedOrder.PaymentMethod,
+                        TotalSum = groupedOrder.TotalSum
+                    });
+                }
+                else
+                {
+                    // Atualiza o TotalSum se o pedido já existir
+                    existingOrder.TotalSum = groupedOrder.TotalSum;
+                }
             }
         }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
-
 
     private async void OnCardTapped(object sender, EventArgs e)
     {
@@ -363,7 +371,6 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             }
         }
     }
-
 
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

@@ -23,7 +23,7 @@ public partial class OrderDetailPage : ContentPage
     // Carregar os itens do pedido para o ClientName
     private async void LoadOrderItems()
     {
-        var orders = await _database.GetPedidosByClientNameAsync(_clientName);
+        var orders = await _database.GetOrdersByClientNameAsync(_clientName);
         
         OrderItemsListView.ItemsSource = orders;
         // Calcula a soma total dos pedidos
@@ -36,7 +36,7 @@ public partial class OrderDetailPage : ContentPage
     // Excluir todos os pedidos do cliente
     private async void OnDeleteAllOrdersClicked(object sender, EventArgs e)
     {
-        var orderItems = await _database.GetPedidosByClientNameAsync(_clientName);
+        var orderItems = await _database.GetOrdersByClientNameAsync(_clientName);
 
         foreach (var orderItem in orderItems)
         {

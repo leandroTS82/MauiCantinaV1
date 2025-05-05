@@ -2,18 +2,20 @@
 using CantinaV1.Data;
 using System.Diagnostics;
 using System.Text;
+using CantinaV1.Services.Internals;
 
 namespace CantinaV1.Services.Externals
 {
     public class WhatsAppService
     {
         private readonly Database _database;
-
+        private readonly GenericConfigurationServices _genericConfigurationServices;
         public WhatsAppService()
         {
             string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "cantina.db4");
             _database = new Database(dbPath);
+            _genericConfigurationServices = new GenericConfigurationServices();
         }
 
         internal async Task SendOrderAsync(List<OrderItem> orderItemsToSave)
@@ -21,37 +23,55 @@ namespace CantinaV1.Services.Externals
             if (orderItemsToSave == null || !orderItemsToSave.Any())
                 return;
 
-            var config = await _database.GetConfiguracaoAsync();
-
-            if (config == null || !config.ReceberPedidos || string.IsNullOrEmpty(config.DDD) || string.IsNullOrEmpty(config.Telefone))
-                return;
-
-            string phoneNumber = $"550{config.DDD}{config.Telefone}";
-
-            string clientName = orderItemsToSave.First().ClientName.Trim();
-
-            var messageBuilder = new StringBuilder();
-            messageBuilder.AppendLine($"Pedido de *{clientName}*:");
-            messageBuilder.AppendLine();
-
-            foreach (var item in orderItemsToSave)
-            {
-                messageBuilder.AppendLine($"{item.ProductName} - Qtd.: {item.Quantity}");
-            }
-
-            string message = messageBuilder.ToString();
-
-            string url = $"https://wa.me/{phoneNumber}?text={Uri.EscapeDataString(message)}";
-
             try
             {
+                // Recuperar configurações necessárias em paralelo
+                var configKeys = new[] { "entryDDD", "entryTelefone", "switchHabilitado" };
+                var configTasks = configKeys.Select(key => _genericConfigurationServices.GetGenericConfigurationAsync(key));
+                var configs = (await Task.WhenAll(configTasks)).ToDictionary(c => c?.Key, c => c);
+
+                // Verificar se alguma configuração está ausente
+                if (!configs.ContainsKey("entryDDD") || !configs.ContainsKey("entryTelefone") || !configs.ContainsKey("switchHabilitado"))
+                    return;
+
+                var ddd = configs["entryDDD"]?.Value?.Trim();
+                var telefone = configs["entryTelefone"]?.Value?.Trim();
+                var receberPedidos = configs["switchHabilitado"]?.Value;
+
+                // Validações
+                if (!bool.TryParse(receberPedidos, out bool isEnabled) || !isEnabled)
+                    return;
+
+                if (string.IsNullOrEmpty(ddd) || string.IsNullOrEmpty(telefone))
+                    return;
+
+                string phoneNumber = $"550{ddd}{telefone}";
+
+                var clientName = orderItemsToSave.First().ClientName?.Trim();
+                if (string.IsNullOrEmpty(clientName))
+                    return;
+
+                // Monta a mensagem
+                var messageBuilder = new StringBuilder()
+                    .AppendLine($"Pedido de *{clientName}*:")
+                    .AppendLine();
+
+                foreach (var item in orderItemsToSave)
+                {
+                    messageBuilder.AppendLine($"{item.ProductName} - Qtd.: {item.Quantity}");
+                }
+
+                string message = messageBuilder.ToString();
+                string url = $"https://wa.me/{phoneNumber}?text={Uri.EscapeDataString(message)}";
+
                 await Launcher.OpenAsync(new Uri(url));
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao abrir o WhatsApp: {ex.Message}");
+                Debug.WriteLine($"Erro ao enviar o pedido: {ex.Message}");
             }
         }
+
 
         internal async Task SendOrdersToCustomNumberAsync(List<OrderItem> orders, List<Product> products, string phoneNumber)
         {

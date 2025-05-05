@@ -1,18 +1,16 @@
-using CantinaV1.Data;
 using CantinaV1.Models;
+using CantinaV1.Services.Internals;
 
 namespace CantinaV1.Views;
 
 public partial class ProductsPage : ContentPage
 {
-    private readonly Database _database;
+    private readonly ProductsService _productsService;
     private List<Product> _produtos;
     public ProductsPage()
     {
         InitializeComponent();
-        string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
-            "cantina.db4");
-        _database = new Database(dbPath);
+        _productsService = new ProductsService();
         Inicializar();
     }
     private async void Inicializar()
@@ -22,7 +20,7 @@ public partial class ProductsPage : ContentPage
 
     private async Task CarregarProdutos()
     {
-        _produtos = await _database.GetProdutosAsync();
+        _produtos = await _productsService.GetAllAsync();
         listProdutos.ItemsSource = _produtos;
     }
 
@@ -48,7 +46,7 @@ public partial class ProductsPage : ContentPage
         };
 
         // Salva o produto no banco de dados
-        await _database.SaveProdutoAsync(produto);
+        await _productsService.SaveItemAsync(produto);
 
         // Limpa os campos do formulário
         entryNome.Text = string.Empty;
@@ -59,8 +57,8 @@ public partial class ProductsPage : ContentPage
     }
     private async void OnLimparProdutosClicked(object sender, EventArgs e)
     {
-        await _database.DeleteAllProdutosAsync(); // Limpa a tabela
-        listProdutos.ItemsSource = await _database.GetProdutosAsync(); // Atualiza a lista
+        await _productsService.DeleteAllAsync(); // Limpa a tabela
+        listProdutos.ItemsSource = await _productsService.GetAllAsync(); // Atualiza a lista
 
     }
 }
