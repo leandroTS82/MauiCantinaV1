@@ -1,6 +1,8 @@
 ﻿using CantinaV1.Models;
 using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -262,7 +264,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             // Verificar se os campos obrigatórios estão preenchidos
             if (string.IsNullOrEmpty(ClientName) || string.IsNullOrEmpty(PaymentMethod))
             {
-                await DisplayAlert("Erro", "O nome do cliente e o método de pagamento são obrigatórios.", "OK");
+                await Toast.Make("⚠️ O nome do cliente e o método de pagamento são obrigatórios.").Show(); // Erro
                 return;
             }
 
@@ -291,13 +293,24 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
                 await whatsAppService.SendOrderAsync(orderItemsToSave);
 
                 // Mostrar uma mensagem de confirmação para o usuário
-                await DisplayAlert("Pedido", "Pedido salvo com sucesso!", "OK");
+                //await Toast.Make("✅ Pedido salvo com sucesso!").Show(); // Sucesso
+                await Snackbar.Make(
+                                "Pedido salvo com sucesso!",
+                                duration: TimeSpan.FromSeconds(3),
+                                visualOptions: new SnackbarOptions
+                                {
+                                    BackgroundColor = Colors.Green,
+                                    TextColor = Colors.White,
+                                    CornerRadius = 10,
+                                    Font = Microsoft.Maui.Font.SystemFontOfSize(14)
+                                }
+                            ).Show();
 
                 Inicializar();
             }
             else
             {
-                await DisplayAlert("Erro", "Por favor, adicione produtos ao pedido.", "OK");
+                await Toast.Make("⚠️ Por favor, adicione produtos ao pedido.").Show(); // Erro
             }
         }
         catch (Exception ex)
@@ -313,7 +326,17 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             var savedOrders = await _ordersService.GetAllAsync();
             if (savedOrders == null || !savedOrders.Any())
             {
-                await DisplayAlert("Aviso", "Nenhum pedido encontrado.", "OK");
+                await Snackbar.Make(
+                                "Nenhum pedido encontrado.",
+                                duration: TimeSpan.FromSeconds(3),
+                                visualOptions: new SnackbarOptions
+                                {
+                                    BackgroundColor = Colors.LightYellow,
+                                    TextColor = Colors.Black,
+                                    CornerRadius = 10,
+                                    Font = Microsoft.Maui.Font.SystemFontOfSize(14)
+                                }
+                            ).Show();
                 return;
             }
 
