@@ -13,7 +13,6 @@ namespace CantinaV1.Data
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<Product>().Wait();
             _database.CreateTableAsync<OrderItem>().Wait();
-            _database.CreateTableAsync<Configuration>().Wait();
             _database.CreateTableAsync<GenericConfiguration>().Wait();
         }
 
@@ -42,6 +41,9 @@ namespace CantinaV1.Data
         {
             return _database.UpdateAsync(item);
         }       
+
+
+        // refatoração de detalhe de pedido pendente
 
         // Recuperar pedidos por ClientName da página order item
         public Task<List<OrderItem>> GetOrdersByClientNameAsync(string clientName)
