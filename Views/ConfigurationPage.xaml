@@ -24,17 +24,13 @@
                         <Entry x:Name="entryTelefone" 
                                Placeholder="Telefone" 
                                Keyboard="Telephone" 
-                               HorizontalOptions="FillAndExpand"/>
+                               HorizontalOptions="FillAndExpand" 
+                               TextChanged="OnEntryPhoneTextChanged"/>
                     </HorizontalStackLayout>
 
                     <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                        <Switch x:Name="switchHabilitado"/>
+                        <Switch x:Name="switchHabilitado" Toggled="OnSaveWhatsAppSenderClicked"/>
                         <Label Text="Pedidos pelo WhatsApp" VerticalOptions="Center"/>
-                        <Button Text="Salvar" 
-                                Clicked="OnSalvarConfiguracaoClicked" 
-                                WidthRequest="80" 
-                                BackgroundColor="#2196F3" 
-                                TextColor="White"/>
                     </HorizontalStackLayout>
 
                     <Label Text="O número registrado receberá os pedidos para entrega no balcão."
@@ -58,13 +54,8 @@
                     </HorizontalStackLayout>
 
                     <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                        <Switch x:Name="switchSendCodeApp"/>
+                        <Switch x:Name="switchSendCodeApp" Toggled="OnSaveSendCodeAppClicked"/>
                         <Label Text="Enviar pedidos pelo app" VerticalOptions="Center"/>
-                        <Button Text="Salvar" 
-                                Clicked="OnSaveSendCodeAppClicked" 
-                                WidthRequest="80" 
-                                BackgroundColor="#2196F3" 
-                                TextColor="White"/>
                     </HorizontalStackLayout>
 
                     <Label Text="Habilite o código e clique em salvar, Informe código para a pessoa que estará no balcão. O código é válido por 24 horas, caso queira pode gerar um novo código."
@@ -81,16 +72,12 @@
                     <Entry x:Name="entryRegisterCodeApp" 
                            Placeholder="Insira o código" 
                            Keyboard="Numeric" 
-                           WidthRequest="160"/>
+                           WidthRequest="160"
+                           TextChanged="OnEntryRegisterCodeAppTextChanged"/>
 
                     <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                        <Switch x:Name="switchReceiveCodeApp"/>
+                        <Switch x:Name="switchReceiveCodeApp" Toggled="OnSaveReceiveCodeAppClicked"/>
                         <Label Text="Receber pedidos pelo app" VerticalOptions="Center"/>
-                        <Button Text="Salvar" 
-                                Clicked="OnSaveReceiveCodeAppClicked" 
-                                WidthRequest="80" 
-                                BackgroundColor="#2196F3" 
-                                TextColor="White"/>
                     </HorizontalStackLayout>
                     <HorizontalStackLayout>
                         <Button Text="Ir para página de pedidos recebidos" 

@@ -32,7 +32,7 @@ public partial class ConfigurationPage : ContentPage
 
         var switchWhatsHabilitado = await _genericConfigurationServices.GetGenericConfigurationAsync("switchHabilitado");
         if (switchHabilitado != null)
-            switchHabilitado.IsToggled = Convert.ToBoolean(switchWhatsHabilitado.Value);       
+            switchHabilitado.IsToggled = Convert.ToBoolean(switchWhatsHabilitado.Value);
 
         LoadCodeAppInit();
     }
@@ -64,7 +64,7 @@ public partial class ConfigurationPage : ContentPage
                 switchSendCodeApp.IsToggled = Convert.ToBoolean(switchSendCodeAppConfig.Value);
             if (switchReceiveCodeAppConfig != null)
                 switchReceiveCodeApp.IsToggled = Convert.ToBoolean(switchReceiveCodeAppConfig.Value);
-        }           
+        }
     }
 
     private int RandomNumber()
@@ -75,26 +75,12 @@ public partial class ConfigurationPage : ContentPage
 
     private void entryDDD_TextChanged(object sender, TextChangedEventArgs e)
     {
+        switchHabilitado.IsToggled = false;
         if (e.NewTextValue.Length > 2)
         {
             entryDDD.Text = e.NewTextValue.Substring(0, 2);
         }
-    }
-    private async void OnSalvarConfiguracaoClicked(object sender, EventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(entryDDD.Text) || string.IsNullOrWhiteSpace(entryTelefone.Text))
-        {
-            await DisplayAlert("Erro", "Preencha DDD e Telefone", "OK");
-            return;
-        }
-
-        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryDDD", entryDDD.Text);
-        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryTelefone", entryTelefone.Text);
-        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchHabilitado", switchHabilitado.IsToggled.ToString());
-
-        //await _database.SaveConfiguracaoAsync(config);
-        await DisplayAlert("Sucesso", "Configuração salva com sucesso!", "OK");
-    }
+    }    
 
     private void OnNewCodeAppClicked(object sender, EventArgs e)
     {
@@ -102,7 +88,32 @@ public partial class ConfigurationPage : ContentPage
         switchSendCodeApp.IsToggled = false;
     }
 
-    private async void OnSaveSendCodeAppClicked(object sender, EventArgs e)
+    private async void OnRedirectReceivedOrdersPageClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new ReceivedOrdersPage());
+    }
+
+    private async void OnSaveReceiveCodeAppClicked(object sender, ToggledEventArgs e)
+    {
+        bool isToggled = e.Value;
+        if (isToggled)
+        {
+            if (string.IsNullOrWhiteSpace(entryRegisterCodeApp.Text))
+            {
+                await DisplayAlert("Erro", "Preencha o código numérico", "OK");
+                switchReceiveCodeApp.IsToggled = false;
+                return;
+            }
+            await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryRegisterCodeApp", entryRegisterCodeApp.Text);
+            await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchReceiveCodeApp", isToggled.ToString());
+        }
+        else
+        {
+            await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchReceiveCodeApp", "false");
+        }
+    }
+
+    private async void OnSaveSendCodeAppClicked(object sender, ToggledEventArgs e)
     {
         var flagSendCode = switchSendCodeApp.IsToggled;
         var sendCode = entryCodeApp.Text;
@@ -110,28 +121,35 @@ public partial class ConfigurationPage : ContentPage
         await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("CodeAppLimit", DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss"));
         await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("CodeApp", sendCode);
         await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchSendCodeApp", flagSendCode.ToString());
-
-        await DisplayAlert("Sucesso", "Configuração salva com sucesso!", "OK");
     }
 
-    private async void OnSaveReceiveCodeAppClicked(object sender, EventArgs e)
+    private void OnEntryRegisterCodeAppTextChanged(object sender, TextChangedEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(entryRegisterCodeApp.Text))
+        switchReceiveCodeApp.IsToggled = false;
+    }
+
+    private async void OnSaveWhatsAppSenderClicked(object sender, ToggledEventArgs e)
+    {
+        bool isToggled = e.Value;        
+
+        if (isToggled && (string.IsNullOrWhiteSpace(entryDDD.Text) || string.IsNullOrWhiteSpace(entryTelefone.Text)))
         {
-            await DisplayAlert("Erro", "Preencha o código numérico", "OK");
+            await DisplayAlert("Erro", "Preencha DDD e Telefone", "OK");
+            switchHabilitado.IsToggled = false;
             return;
         }
 
-        var flagReceiveCode = switchReceiveCodeApp.IsToggled;
-        if (flagReceiveCode)
-            await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryRegisterCodeApp", entryRegisterCodeApp.Text);
-        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchReceiveCodeApp", flagReceiveCode.ToString());
-
-        await DisplayAlert("Sucesso", "Configuração salva com sucesso!", "OK");
+        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryDDD", entryDDD.Text);
+        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("entryTelefone", entryTelefone.Text);
+        await _genericConfigurationServices.SaveOrUpdateGenericConfiguration("switchHabilitado", switchHabilitado.IsToggled.ToString());        
     }
 
-    private async void OnRedirectReceivedOrdersPageClicked(object sender, EventArgs e)
+    private void OnEntryPhoneTextChanged(object sender, TextChangedEventArgs e)
     {
-        await Navigation.PushAsync(new ReceivedOrdersPage());
+        switchHabilitado.IsToggled = false;
+        if (e.NewTextValue.Length > 9)
+        {
+            entryTelefone.Text = e.NewTextValue.Substring(0, 9);
+        }
     }
 }
