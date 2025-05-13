@@ -14,6 +14,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 {
     private List<Product> _product;
     private string _clientName;
+    private string _orderNotes;
     private string _paymentMethod;
     private List<string> _clients = new List<string>();
     private List<OrderItem> _orderItems;
@@ -43,6 +44,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         await LoadOrderItemProducts();
         await LoadSavedOrders(); // Carrega os pedidos salvos
         entryClientName.Text = string.Empty;
+        entryOrderNotes.Text = string.Empty;
         UnCheckRadiosPaymentMethod();
 
     }
@@ -53,6 +55,16 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         set
         {
             _clientName = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string OrderNotes
+    {
+        get => _orderNotes;
+        set
+        {
+            _orderNotes = value;
             OnPropertyChanged();
         }
     }
@@ -278,6 +290,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
                 {
                     item.ClientName = ClientName;
                     item.PaymentMethod = PaymentMethod;
+                    item.OrderNotes = OrderNotes;
 
                     await _ordersService.SaveItemAsync(item);
                 }

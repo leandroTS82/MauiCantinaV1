@@ -30,6 +30,7 @@ namespace CantinaV1.Models
 
         public decimal Total => Price * Quantity;
         public decimal TotalSum { get; set; }
+        public string OrderNotes { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)

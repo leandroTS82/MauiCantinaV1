@@ -52,6 +52,10 @@
             </ListView>
             <Label x:Name="labelTotalPedido" Text="Total do Pedido: R$0,00" FontSize="18" HorizontalOptions="Center" Margin="10,10,0,0"/>
 
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <Entry x:Name="entryOrderNotes" Placeholder="Observações do pedido, ex: telefone de contato" Text="{Binding OrderNotes}" Margin="0,15,0,15"/>
+            </HorizontalStackLayout>
+
             <!-- Botões na mesma linha -->
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                 <Button Text="Registrar Pedido" Clicked="OnSaveOrderClicked"/>

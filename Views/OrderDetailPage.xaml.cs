@@ -31,6 +31,8 @@ public partial class OrderDetailPage : ContentPage
 
         // Atualiza o Label com o valor formatado
         Total.Text = $"Total: R$ {totalSum:N2}";
+        
+        OrderNotes.Text = orders.FirstOrDefault()?.OrderNotes;
     }
 
     // Excluir todos os pedidos do cliente

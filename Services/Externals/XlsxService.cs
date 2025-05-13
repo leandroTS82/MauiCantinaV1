@@ -29,6 +29,7 @@ namespace CantinaV1.Services.Externals
             worksheet.Cell(1, 5).Value = "Quantidade";
             worksheet.Cell(1, 6).Value = "Total";
             worksheet.Cell(1, 7).Value = "Forma de Pagamento";
+            worksheet.Cell(1, 8).Value = "Obs.";
 
             // Dados
             int row = 2;
@@ -41,6 +42,7 @@ namespace CantinaV1.Services.Externals
                 worksheet.Cell(row, 5).Value = order.Quantity;
                 worksheet.Cell(row, 6).Value = order.Total;
                 worksheet.Cell(row, 7).Value = order.PaymentMethod;
+                worksheet.Cell(row, 8).Value = order.OrderNotes;
                 row++;
             }
 

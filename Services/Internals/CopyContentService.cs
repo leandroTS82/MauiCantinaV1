@@ -43,7 +43,7 @@ namespace CantinaV1.Services.Internals
 
             foreach (var paymentGroup in groupedByPayment)
             {
-                string paymentMethod = paymentGroup.Key; 
+                string paymentMethod = paymentGroup.Key;
                 messageBuilder.AppendLine($"   *{paymentMethod.Trim()}*");
                 messageBuilder.AppendLine();
 
@@ -57,6 +57,8 @@ namespace CantinaV1.Services.Internals
                     string clientName = clientGroup.Key;
                     messageBuilder.AppendLine($"*{clientName.Trim()}*:");
 
+                    var orderNote = clientGroup.FirstOrDefault(o => !string.IsNullOrEmpty(o.OrderNotes))?.OrderNotes ?? string.Empty;
+
                     foreach (var order in clientGroup)
                     {
                         messageBuilder.AppendLine($"{order.ProductName} : qtd. {order.Quantity}");
@@ -64,6 +66,9 @@ namespace CantinaV1.Services.Internals
 
                     decimal totalClient = clientGroup.Sum(o => o.Total);
                     messageBuilder.AppendLine($"Valor Total: R$ {totalClient:0.00}");
+                    if (!string.IsNullOrEmpty(orderNote))
+                        messageBuilder.AppendLine($"> *Obs.*: {orderNote}");
+
                     messageBuilder.AppendLine("----------------");
                     messageBuilder.AppendLine();
                 }

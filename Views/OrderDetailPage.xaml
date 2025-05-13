@@ -16,7 +16,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Grid Padding="10" ColumnDefinitions="*,Auto,Auto,Auto,Auto" RowSpacing="10" ColumnSpacing="10">
+                        <Grid Padding="10" ColumnDefinitions="*,Auto,Auto,Auto,Auto" RowSpacing="20" ColumnSpacing="10">
                             <!-- Nome do produto -->
                             <Label Text="{Binding ProductName}" FontSize="14" VerticalOptions="Center" Grid.Column="0" />
 
@@ -30,15 +30,16 @@
                             <Label Text="{Binding Total, StringFormat='R${0:N2}'}" FontSize="14" VerticalOptions="Center" TextColor="Green" Grid.Column="3" HorizontalOptions="End" />
 
                             <!-- Botão de excluir -->
-                            <Button Text="🗑️" Clicked="OnDeleteOrderItemClicked" CommandParameter="{Binding .}" Grid.Column="4" 
-                            VerticalOptions="Center" BackgroundColor="WhiteSmoke" TextColor="Red" WidthRequest="40" HeightRequest="30" />
+                            <Button Text="❌" Clicked="OnDeleteOrderItemClicked" CommandParameter="{Binding .}" Grid.Column="4" 
+                            VerticalOptions="Center" BackgroundColor="WhiteSmoke" TextColor="Red" WidthRequest="45" HeightRequest="45" />
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>
+        </ListView>       
 
         <Label x:Name="Total" FontSize="16" VerticalOptions="Center" Margin="0,5" />
+        <Label x:Name="OrderNotes" FontSize="14" VerticalOptions="Center" Margin="0,5" />
         <!-- Botão para excluir todos os pedidos do cliente -->
         <Button Text="Excluir Todos os Pedidos" Clicked="OnDeleteAllOrdersClicked" BackgroundColor="Red" TextColor="White" />
     </VerticalStackLayout>
