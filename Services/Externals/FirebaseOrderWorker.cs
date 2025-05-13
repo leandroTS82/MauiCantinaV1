@@ -32,7 +32,7 @@ namespace CantinaV1.Services.Externals
                 : null;
 
             // url fixada para testes
-            firebaseUrl = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
+            //firebaseUrl = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
 
             string? orderKey = await _configService.GetGenericConfigurationAsync("entryRegisterCodeApp") is { } key && !string.IsNullOrEmpty(key.Value)
                 ? key.Value

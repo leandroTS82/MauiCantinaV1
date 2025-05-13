@@ -57,7 +57,7 @@ namespace CantinaV1.Services.Externals
         {
             List<OrderToSend> orders = new List<OrderToSend>();
             string fireBaseUrlDb = await GetValue("FirebaseAuthDomain");
-            fireBaseUrlDb = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
+            //fireBaseUrlDb = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
             if (string.IsNullOrWhiteSpace(fireBaseUrlDb))
                 return orders;
 
