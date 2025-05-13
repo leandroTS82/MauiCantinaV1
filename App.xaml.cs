@@ -10,7 +10,7 @@ namespace CantinaV1
         {
             InitializeComponent();
             // Força o tema claro
-            UserAppTheme = AppTheme.Light;
+            //UserAppTheme = AppTheme.Light;
 
             InitializeAppAsync(); // Chamada segura
             
