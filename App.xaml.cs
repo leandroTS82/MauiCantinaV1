@@ -1,6 +1,5 @@
 ﻿using CantinaV1.FilesConfiguration;
 using CantinaV1.Views;
-using System.Threading.Tasks;
 
 namespace CantinaV1
 {
