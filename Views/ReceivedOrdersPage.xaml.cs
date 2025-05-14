@@ -7,7 +7,6 @@ namespace CantinaV1.Views
 {
     public partial class ReceivedOrdersPage : ContentPage
     {
-        private PollingFirebaseOrderService _pollingService;
         private readonly GenericConfigurationServices _configService;
 
 
@@ -91,7 +90,6 @@ namespace CantinaV1.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            _pollingService?.StopPolling();
         }
     }
 }
