@@ -74,8 +74,12 @@ namespace CantinaV1.Views
                     {
                         Orders.Clear();
                         // Inverte a lista para mostrar o último pedido no topo
-                        foreach (var order in orders.AsEnumerable().Reverse())
+                        foreach (OrderToSend order in orders)
                             Orders.Add(order);
+                        // Emite som + vibração
+#if ANDROID
+                            CantinaV1.Platforms.Android.NotificationHelper.PlayNotification();
+#endif
                     }
                     catch (Exception ex)
                     {
@@ -85,7 +89,7 @@ namespace CantinaV1.Views
             };
 
             await _firebaseWorker.StartListeningAsync();
-        }       
+        }
 
         protected override void OnDisappearing()
         {
