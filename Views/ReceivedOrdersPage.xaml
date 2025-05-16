@@ -70,7 +70,9 @@
             </CollectionView>
 
             <!-- Lista de Pedidos selecionados -->
-            <Label Text="Pedidos Entregues"
+            <Label x:Name="LabelReceivedOrders"
+                   IsVisible="False"
+                   Text="Pedidos Entregues"
                    FontSize="24"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"
