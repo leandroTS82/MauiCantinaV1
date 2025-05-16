@@ -2,13 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CantinaV1.Views.ReceivedOrdersPage"
-             x:Name="ThisPage">
+             x:Name="📦 Painel de pedidos recebidos">
 
     <ScrollView>
         <VerticalStackLayout Padding="10">
+            <Label Text="Pedidos"
+                   FontSize="34"
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold"
+                   TextColor="#2C3E50" />
 
             <!-- Lista de Pedidos não selecionados -->
-            <Label Text="Pedidos Recebidos"
+            <Label x:Name="LabelOrdersList"
+                   IsVisible="False" Text="Recebidos"
                    FontSize="24"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
@@ -58,11 +64,6 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-
-                                <Label Text="{Binding IsSelected, StringFormat='Selecionado: {0}'}"
-                                       FontSize="12"
-                                       TextColor="Green"
-                                       HorizontalOptions="End" />
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>
@@ -72,7 +73,7 @@
             <!-- Lista de Pedidos selecionados -->
             <Label x:Name="LabelReceivedOrders"
                    IsVisible="False"
-                   Text="Pedidos Entregues"
+                   Text="Entregues"
                    FontSize="24"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"
@@ -123,11 +124,6 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-
-                                <Label Text="{Binding IsSelected, StringFormat='Selecionado: {0}'}"
-                                       FontSize="12"
-                                       TextColor="Green"
-                                       HorizontalOptions="End" />
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>
