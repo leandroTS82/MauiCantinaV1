@@ -76,7 +76,7 @@ namespace CantinaV1.Views
             }
             // Atualiza a visibilidade com base nas listas
             LabelReceivedOrders.IsVisible = SelectedOrders.Any();
-            LabelOrdersList.IsVisible = Orders.Any();
+            LabelOrdersList.IsVisible = orders.Any();
         }
 
         protected override async void OnAppearing()
