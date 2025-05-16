@@ -8,54 +8,71 @@ namespace CantinaV1.Views
     public partial class ReceivedOrdersPage : ContentPage
     {
         private readonly GenericConfigurationServices _configService;
-
-
         private FirebaseOrderWorker _firebaseWorker;
-        List<OrderToSend> _orders = new List<OrderToSend>();
+        private FireBaseOrderServices _firebaseOrderService;
+
         public ObservableCollection<OrderToSend> Orders { get; set; } = new ObservableCollection<OrderToSend>();
+        public ObservableCollection<OrderToSend> SelectedOrders { get; set; } = new ObservableCollection<OrderToSend>();
 
         public ReceivedOrdersPage()
         {
             InitializeComponent();
             _configService = new GenericConfigurationServices();
+            _firebaseOrderService = new FireBaseOrderServices();
             BindingContext = this;
-            IniciaOrders();
+            _ = IniciaOrders();
         }
 
         private async Task IniciaOrders()
         {
-            var firebaseOrder = new FireBaseOrderServices();
             var switchReceiveCodeApp = await _configService.GetGenericConfigurationAsync("switchReceiveCodeApp");
             if (switchReceiveCodeApp == null || !bool.TryParse(switchReceiveCodeApp.Value, out bool isEnabled) || !isEnabled)
                 return;
+
             var orderKey = await _configService.GetGenericConfigurationAsync("entryRegisterCodeApp");
             if (orderKey == null || string.IsNullOrEmpty(orderKey.Value))
                 return;
-            var result = await firebaseOrder.BuscarPedidosPorOrderKeyAsync(orderKey.Value);
+
+            var result = await _firebaseOrderService.GetOrdersByOrderKeyAsync(orderKey.Value);
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Orders.Clear();
-                foreach (var order in result)
-                    Orders.Add(order);
+                UpdateOrderLists(result);
             });
         }
 
-        private void OnOrderTapped(object sender, TappedEventArgs e)
+        private async void OnOrderTapped(object sender, TappedEventArgs e)
         {
             if (sender is Frame frame && frame.BindingContext is OrderToSend tappedOrder)
             {
-                // Alterna o estado
                 tappedOrder.IsSelected = !tappedOrder.IsSelected;
 
-                // Remove da posição atual
-                Orders.Remove(tappedOrder);
+                await _firebaseOrderService.UpdateOrderIsSelectedAsync(tappedOrder);
 
-                // Adiciona no topo ou fim
-                if (tappedOrder.IsSelected)
-                    Orders.Insert(0, tappedOrder); // Verde => vai pro topo
+                // Atualiza as duas listas com base no estado atual
+                List<OrderToSend>? combinedList = Orders.Concat(SelectedOrders)
+                                         .Where(o => o.OrderKey != tappedOrder.OrderKey)
+                                         .ToList();
+                combinedList.Add(tappedOrder);
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    UpdateOrderLists(combinedList);
+                });
+            }
+        }
+
+        private void UpdateOrderLists(IEnumerable<OrderToSend> orders)
+        {
+            Orders.Clear();
+            SelectedOrders.Clear();
+
+            foreach (var order in orders.OrderByDescending(o => o.Created))
+            {
+                if (order.IsSelected)
+                    SelectedOrders.Add(order);
                 else
-                    Orders.Add(tappedOrder); // Amarelo => vai pro fim
+                    Orders.Add(order);
             }
         }
 
@@ -72,13 +89,9 @@ namespace CantinaV1.Views
                 {
                     try
                     {
-                        Orders.Clear();
-                        // Inverte a lista para mostrar o último pedido no topo
-                        foreach (OrderToSend order in orders)
-                            Orders.Add(order);
-                        // Emite som + vibração
+                        UpdateOrderLists(orders);
 #if ANDROID
-                            CantinaV1.Platforms.Android.NotificationHelper.PlayNotification();
+                        CantinaV1.Platforms.Android.NotificationHelper.PlayNotification();
 #endif
                     }
                     catch (Exception ex)

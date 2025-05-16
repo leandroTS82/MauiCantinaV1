@@ -8,6 +8,7 @@ namespace CantinaV1.Services.Externals
     public class FirebaseOrderWorker
     {
         private readonly GenericConfigurationServices _configService;
+        private readonly FireBaseOrderServices _fireBaseOrderServices;
         private FirebaseClient _firebaseClient;
         private IDisposable _subscription;
 
@@ -16,6 +17,7 @@ namespace CantinaV1.Services.Externals
         public FirebaseOrderWorker()
         {
             _configService = new GenericConfigurationServices();
+            _fireBaseOrderServices = new FireBaseOrderServices();
         }
 
         public async Task StartListeningAsync()
@@ -30,9 +32,6 @@ namespace CantinaV1.Services.Externals
             string? firebaseUrl = await _configService.GetGenericConfigurationAsync("FirebaseAuthDomain") is { } config && !string.IsNullOrEmpty(config.Value)
                 ? config.Value
                 : null;
-
-            // url fixada para testes
-            //firebaseUrl = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
 
             string? orderKey = await _configService.GetGenericConfigurationAsync("entryRegisterCodeApp") is { } key && !string.IsNullOrEmpty(key.Value)
                 ? key.Value
@@ -51,7 +50,7 @@ namespace CantinaV1.Services.Externals
                             {
                                 if (data.Object != null)
                                 {
-                                    var allOrders = await GetAllOrders(orderKey);
+                                    var allOrders = await _fireBaseOrderServices.GetOrdersByOrderKeyAsync(orderKey);
                                     OrdersUpdated?.Invoke(this, allOrders);
                                 }
                             });
@@ -61,16 +60,6 @@ namespace CantinaV1.Services.Externals
         {
             _subscription?.Dispose();
             _subscription = null; // Permite nova inscrição no futuro
-        }
-
-        private async Task<List<OrderToSend>> GetAllOrders(string orderKey)
-        {
-            var orders = await _firebaseClient
-                .Child(orderKey)
-                .OnceAsync<OrderToSend>();
-
-            var listOrders = orders.Select(o => o.Object).ToList();
-            return listOrders;
         }
     }
 }

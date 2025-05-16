@@ -53,11 +53,10 @@ namespace CantinaV1.Services.Externals
                 .PostAsync(orderToSend);
         }
 
-        internal async Task<List<OrderToSend>> BuscarPedidosPorOrderKeyAsync(string orderKey)
+        internal async Task<List<OrderToSend>> GetOrdersByOrderKeyAsync(string orderKey)
         {
             List<OrderToSend> orders = new List<OrderToSend>();
             string fireBaseUrlDb = await GetValue("FirebaseAuthDomain");
-            //fireBaseUrlDb = "https://pedidoscantina-7b0d6-default-rtdb.firebaseio.com";
             if (string.IsNullOrWhiteSpace(fireBaseUrlDb))
                 return orders;
 
@@ -70,7 +69,7 @@ namespace CantinaV1.Services.Externals
                 if (firebaseOrder.Object != null)
                 {
                     var order = firebaseOrder.Object;
-                    order.Id = firebaseOrder.Key; // Adiciona o ID do pedido
+                    order.OrderKey = firebaseOrder.Key; // Adiciona o ID do pedido
                     orders.Add(order);
                 }
             }
@@ -78,7 +77,24 @@ namespace CantinaV1.Services.Externals
             return orders;
         }
 
+        public async Task UpdateOrderIsSelectedAsync(OrderToSend order)
+        {
+            if (order == null || string.IsNullOrEmpty(order.OrderKey))
+                return;
 
+            string fireBaseUrlDb = await GetValue("FirebaseAuthDomain");
+            string orderKey = await GetValue("entryRegisterCodeApp");
+
+            if (string.IsNullOrWhiteSpace(fireBaseUrlDb) || string.IsNullOrWhiteSpace(orderKey))
+                return;
+
+            var firebaseClient = new FirebaseClient(fireBaseUrlDb);
+
+            await firebaseClient
+                .Child(orderKey)
+                .Child(order.OrderKey)
+                .PatchAsync(new { IsSelected = order.IsSelected });
+        }
 
         #region InternalMethods
         private async Task<string> GetValue(string key)

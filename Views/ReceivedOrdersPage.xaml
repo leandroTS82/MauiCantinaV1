@@ -6,6 +6,8 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="10">
+
+            <!-- Lista de Pedidos não selecionados -->
             <Label Text="Pedidos Recebidos"
                    FontSize="24"
                    FontAttributes="Bold"
@@ -18,22 +20,8 @@
                                Margin="10"
                                CornerRadius="10"
                                HasShadow="True"
-                               BorderColor="Gray">
-
-                            <Frame.Triggers>
-                                <DataTrigger TargetType="Frame"
-                                             Binding="{Binding IsSelected}"
-                                             Value="True">
-                                    <Setter Property="BackgroundColor"
-                                            Value="LightGreen" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Frame"
-                                             Binding="{Binding IsSelected}"
-                                             Value="False">
-                                    <Setter Property="BackgroundColor"
-                                            Value="LightYellow" />
-                                </DataTrigger>
-                            </Frame.Triggers>
+                               BorderColor="Gray"
+                               BackgroundColor="LightYellow">
 
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnOrderTapped" />
@@ -48,6 +36,11 @@
                                 <Label Text="{Binding Created}"
                                        FontSize="14"
                                        TextColor="Gray" />
+
+                                <Label Text="{Binding Id}"
+                                       FontSize="12"
+                                       TextColor="DarkGray"
+                                       FontAttributes="Italic" />
 
                                 <Label Text="Produtos:"
                                        FontAttributes="Bold"
@@ -65,11 +58,80 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
+
+                                <Label Text="{Binding IsSelected, StringFormat='Selecionado: {0}'}"
+                                       FontSize="12"
+                                       TextColor="Green"
+                                       HorizontalOptions="End" />
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <!-- Lista de Pedidos selecionados -->
+            <Label Text="Pedidos Entregues"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,30,0,10" />
+
+            <CollectionView ItemsSource="{Binding SelectedOrders}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10"
+                               Margin="10"
+                               CornerRadius="10"
+                               HasShadow="True"
+                               BorderColor="Gray"
+                               BackgroundColor="LightGreen">
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnOrderTapped" />
+                            </Frame.GestureRecognizers>
+
+                            <VerticalStackLayout>
+                                <Label Text="{Binding ClientName}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+
+                                <Label Text="{Binding Created}"
+                                       FontSize="14"
+                                       TextColor="Gray" />
+
+                                <Label Text="{Binding OrderKey}"
+                                       FontSize="6"
+                                       TextColor="DarkGray"
+                                       FontAttributes="Italic" />
+
+                                <Label Text="Produtos:"
+                                       FontAttributes="Bold"
+                                       Margin="0,10,0,5" />
+
+                                <CollectionView ItemsSource="{Binding Products}"
+                                                Margin="0,0,0,10">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <HorizontalStackLayout>
+                                                <Label Text="{Binding ProductName}" />
+                                                <Label Text=" x " />
+                                                <Label Text="{Binding Quantity}" />
+                                            </HorizontalStackLayout>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                                <Label Text="{Binding IsSelected, StringFormat='Selecionado: {0}'}"
+                                       FontSize="12"
+                                       TextColor="Green"
+                                       HorizontalOptions="End" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
