@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using CantinaV1.Services.Internals;
 
 namespace CantinaV1.Views
 {
@@ -30,6 +30,11 @@ namespace CantinaV1.Views
         private async void OnRedirectReceivedOrdersPageClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ReceivedOrdersPage());
+        }        
+
+        private async void GoToOrderHistoryPage(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new OrderHistoryPage());
         }
     }
 }

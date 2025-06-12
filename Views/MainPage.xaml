@@ -56,6 +56,14 @@
                             Clicked="GoToConfigurationPage" />
                 </Frame>
 
+                <Frame CornerRadius="16" BackgroundColor="#F39C12" HasShadow="True" Padding="12"> 
+                    <Button Text="📊 Histórico de Pedidos"
+                            FontSize="22"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Clicked="GoToOrderHistoryPage" />
+                </Frame>
+
             </VerticalStackLayout>
 
             <!-- Instruções de uso -->

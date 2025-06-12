@@ -14,6 +14,7 @@ namespace CantinaV1.Data
             _database.CreateTableAsync<Product>().Wait();
             _database.CreateTableAsync<OrderItem>().Wait();
             _database.CreateTableAsync<GenericConfiguration>().Wait();
+            _database.CreateTableAsync<OrderHistory>().Wait();
         }
 
         // Método genérico para obter todos os registros de qualquer tipo de tabela
