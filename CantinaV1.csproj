@@ -76,6 +76,9 @@
 		<MauiXaml Update="Views\AdvancedSettingsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Popups\HistoryPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\OrderDetailPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

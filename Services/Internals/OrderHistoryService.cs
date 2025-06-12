@@ -16,6 +16,32 @@ namespace CantinaV1.Services.Internals
         {
             return await _database.GetAllAsync<OrderHistory>();
         }
+
+        internal List<OrderHistory> ConvertOrderItemsToOrderHistotyItems(string observation, List<OrderItem> orderItems)
+        {
+            var orderHistoryList = new List<OrderHistory>();
+
+            foreach (var item in orderItems)
+            {
+                var historyItem = new OrderHistory
+                {
+                    Date = item.Created,
+                    ClientName = item.ClientName,
+                    ProductName = item.ProductName,
+                    Price = item.Price,
+                    Quantity = item.Quantity,
+                    Total = item.Total,
+                    PaymentMethod = item.PaymentMethod,
+                    Observation = $"|Obs. Limpesa:{observation}"
+                };
+
+                orderHistoryList.Add(historyItem);
+            }
+
+            return orderHistoryList;
+        }
+
+
         internal async Task DeleteAllAsync()
         {
             await _database.DeleteAllAsync<OrderHistory>();

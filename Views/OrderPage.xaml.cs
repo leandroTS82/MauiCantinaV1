@@ -1,8 +1,10 @@
 ﻿using CantinaV1.Models;
+using CantinaV1.Popups;
 using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -22,6 +24,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     // Lista para armazenar os pedidos
     public ObservableCollection<OrderItem> OrderItems { get; set; } = new ObservableCollection<OrderItem>();
     private readonly OrdersService _ordersService;
+    private readonly OrderHistoryService _ordersHistoryService;
     private readonly ProductsService _productsService;
     private readonly CopyContentService _copyContentService;
     private readonly XlsxService _exportXlsxService;
@@ -32,6 +35,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         BindingContext = this;
 
         _ordersService = new OrdersService();
+        _ordersHistoryService = new OrderHistoryService();
         _productsService = new ProductsService();
         _copyContentService = new CopyContentService();
         _exportXlsxService = new XlsxService();
@@ -48,7 +52,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
         UnCheckRadiosPaymentMethod();
 
     }
-    
+
     public string ClientName
     {
         get => _clientName;
@@ -101,7 +105,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
             _paymentMethod = value;
             OnPropertyChanged();
         }
-    }    
+    }
 
     private async void LoadClientsFromJson()
     {
@@ -151,12 +155,30 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async void OnClearAllOrdersClicked(object sender, EventArgs e)
     {
+        var popup = new HistoryPopup();
+        var result = await this.ShowPopupAsync(popup) as HistoryPopup;
+        if (result != null)
+        {
+            if (result.RegisterHistory)
+            {
+                List<OrderItem>? orderItems = await _ordersService.GetAllAsync();
+                if (orderItems.Count > 0)
+                {
+                    List<OrderHistory> OrderHistotyItems = _ordersHistoryService.ConvertOrderItemsToOrderHistotyItems(result.Observation, orderItems);
+                    foreach (var history in OrderHistotyItems)
+                    {
+                        await _ordersHistoryService.SaveItemAsync(history);
+                    }
+                }
+            }
+        }
+
         await _ordersService.DeleteAllAsync();
         await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos.", "OK");
         // ação temporária
         await Navigation.PushAsync(new MainPage());
     }
-   
+
     private void UnCheckRadiosPaymentMethod()
     {
         // Desmarca os RadioButtons
@@ -199,7 +221,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     }
 
     private async Task CopyReportTextAsync(List<OrderItem> orders, List<Product> products)
-    {        
+    {
         ResponseModel response = await _copyContentService.CopyReportTextAsync(orders, products);
         if (response.StatusCode == 200)
         {
@@ -363,7 +385,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
                     TotalSum = group.Sum(order => order.Total)
                 })
                 .ToList();
-            
+
             foreach (var groupedOrder in groupedOrders)
             {
                 // Verifica se o pedido já existe na lista
