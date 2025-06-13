@@ -164,7 +164,7 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
                 List<OrderItem>? orderItems = await _ordersService.GetAllAsync();
                 if (orderItems.Count > 0)
                 {
-                    List<OrderHistory> OrderHistotyItems = _ordersHistoryService.ConvertOrderItemsToOrderHistotyItems(result.Observation, orderItems);
+                    List<OrderHistory> OrderHistotyItems = _ordersHistoryService.ConvertOrderItemsToOrderHistoryItems(result.Observation, orderItems);
                     foreach (var history in OrderHistotyItems)
                     {
                         await _ordersHistoryService.SaveItemAsync(history);
