@@ -17,8 +17,11 @@ namespace CantinaV1.Services.Internals
             return await _database.GetAllAsync<OrderHistory>();
         }
 
-        internal List<OrderHistory> ConvertOrderItemsToOrderHistotyItems(string observation, List<OrderItem> orderItems)
+        internal List<OrderHistory> ConvertOrderItemsToOrderHistoryItems(string observation, List<OrderItem> orderItems)
         {
+            if (orderItems == null || !orderItems.Any())
+                return new List<OrderHistory>();
+
             var orderHistoryList = new List<OrderHistory>();
 
             foreach (var item in orderItems)
@@ -32,7 +35,7 @@ namespace CantinaV1.Services.Internals
                     Quantity = item.Quantity,
                     Total = item.Total,
                     PaymentMethod = item.PaymentMethod,
-                    Observation = $"|Obs. Limpesa:{observation}"
+                    Observation = $"{item.OrderNotes} |Obs. Limpeza:{observation}"
                 };
 
                 orderHistoryList.Add(historyItem);
