@@ -14,6 +14,7 @@ namespace CantinaV1.ViewModels
         private readonly XlsxService _xlsxService = new();
 
         public IRelayCommand ImportXlsxCommand { get; }
+        public ICommand RegisterPaymentCommand { get; }
 
         private readonly OrderHistoryService _historyService;
         public ObservableCollection<OrderHistoryGroup> GroupedOrderHistories { get; set; }
@@ -41,6 +42,7 @@ namespace CantinaV1.ViewModels
             GroupedOrderHistories = new ObservableCollection<OrderHistoryGroup>();
 
             ImportXlsxCommand = new RelayCommand(async () => await ImportXlsxAsync());
+            RegisterPaymentCommand = new RelayCommand<OrderHistory>(async (order) => await RegisterPayment(order));
 
             EndDate = DateTime.Now;
             StartDate = EndDate.AddMonths(-2);
@@ -59,12 +61,12 @@ namespace CantinaV1.ViewModels
                 {
                     PickerTitle = "Selecione o arquivo Excel",
                     FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-            {
-                { DevicePlatform.Android, new[] { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } },
-                { DevicePlatform.WinUI, new[] { ".xlsx" } },
-                { DevicePlatform.iOS, new[] { "com.microsoft.excel.xlsx" } }, // opcional para iOS
-                { DevicePlatform.MacCatalyst, new[] { "com.microsoft.excel.xlsx" } } // opcional para MacCatalyst
-            })
+                    {
+                        { DevicePlatform.Android, new[] { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } },
+                        { DevicePlatform.WinUI, new[] { ".xlsx" } },
+                        { DevicePlatform.iOS, new[] { "com.microsoft.excel.xlsx" } },
+                        { DevicePlatform.MacCatalyst, new[] { "com.microsoft.excel.xlsx" } }
+                    })
                 });
 
                 if (result != null)
@@ -72,10 +74,13 @@ namespace CantinaV1.ViewModels
                     using var stream = await result.OpenReadAsync();
                     using var workbook = new XLWorkbook(stream);
                     var worksheet = workbook.Worksheet(1);
-                    var rows = worksheet.RowsUsed().Skip(1); // pular cabeçalho
+                    var rows = worksheet.RowsUsed().Skip(1);
 
                     foreach (var row in rows)
                     {
+                        var paymentMethod = row.Cell(7).GetString();
+                        var status = paymentMethod == "Pagar depois" ? "Pendente" : "Pago";
+
                         var order = new OrderHistory
                         {
                             Date = DateTime.Parse(row.Cell(1).GetString()),
@@ -84,8 +89,9 @@ namespace CantinaV1.ViewModels
                             Price = decimal.Parse(row.Cell(4).GetString().Replace("R$", "").Trim()),
                             Quantity = int.Parse(row.Cell(5).GetString()),
                             Total = decimal.Parse(row.Cell(6).GetString().Replace("R$", "").Trim()),
-                            PaymentMethod = row.Cell(7).GetString(),
-                            Observation = row.Cell(8).GetString()
+                            PaymentMethod = paymentMethod,
+                            Observation = row.Cell(8).GetString(),
+                            Status = status
                         };
 
                         await _ordersService.SaveItemAsync(order);
@@ -100,6 +106,15 @@ namespace CantinaV1.ViewModels
             }
         }
 
+        private async Task RegisterPayment(OrderHistory order)
+        {
+            if (order.PaymentMethod == "Pagar depois" && order.Status == "Pendente")
+            {
+                order.Status = "Pago";
+                await _ordersService.UpdateAsync(order);
+                await LoadData();
+            }
+        }
 
         private async Task LoadData()
         {

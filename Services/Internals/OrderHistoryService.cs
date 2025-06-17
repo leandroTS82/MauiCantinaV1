@@ -26,6 +26,7 @@ namespace CantinaV1.Services.Internals
 
             foreach (var item in orderItems)
             {
+                var status = item.PaymentMethod == "Pagar depois" ? "Pendente" : "Pago";
                 var historyItem = new OrderHistory
                 {
                     Date = item.Created,
@@ -34,9 +35,15 @@ namespace CantinaV1.Services.Internals
                     Price = item.Price,
                     Quantity = item.Quantity,
                     Total = item.Total,
+                    Status = status,
                     PaymentMethod = item.PaymentMethod,
                     Observation = $"{item.OrderNotes} |Obs. Limpeza:{observation}"
                 };
+                // Só define PaymentDate se não for "Pagar depois"
+                if (item.PaymentMethod != "Pagar depois")
+                {
+                    historyItem.PaymentDate = item.Created;
+                }
 
                 orderHistoryList.Add(historyItem);
             }
@@ -53,6 +60,10 @@ namespace CantinaV1.Services.Internals
         internal async Task SaveItemAsync(OrderHistory item)
         {
             await _database.InsertAsync<OrderHistory>(item);
+        }
+        internal async Task UpdateAsync(OrderHistory item)
+        {
+            await _database.UpdateAsync<OrderHistory>(item);
         }
     }
 }
