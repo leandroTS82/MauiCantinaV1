@@ -18,6 +18,27 @@ namespace CantinaV1.Services.Externals
             _genericConfigurationServices = new GenericConfigurationServices();
         }
 
+        internal async Task SendMessage(string phoneNumber, string message)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(phoneNumber) || string.IsNullOrWhiteSpace(message))
+                    return;
+
+                // Monta o link para o WhatsApp com o número e mensagem
+                string url = $"https://wa.me/{phoneNumber}?text={Uri.EscapeDataString(message)}";
+
+                // Tenta abrir o link no WhatsApp
+                await Launcher.OpenAsync(new Uri(url));
+            }
+            catch (Exception ex)
+            {
+                // Em caso de erro, escreve no log
+                Debug.WriteLine($"Erro ao enviar mensagem via WhatsApp: {ex.Message}");
+            }
+        }
+
+
         internal async Task SendOrderAsync(List<OrderItem> orderItemsToSave)
         {
             if (orderItemsToSave == null || !orderItemsToSave.Any())

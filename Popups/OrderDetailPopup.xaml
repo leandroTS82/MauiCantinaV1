@@ -7,6 +7,9 @@
         <Label Text="{Binding ClientName}" FontSize="20" FontAttributes="Bold"/>
         <Label Text="{Binding Date, StringFormat='Data: {0:dd/MM/yyyy}'}" FontSize="16"/>
         <Label Text="{Binding PaymentMethod, StringFormat='Pagamento: {0}'}" FontSize="16"/>
+        <Label Text="{Binding Status, StringFormat='Status: {0}'}" FontSize="16"/>
+        <Label Text="{Binding PaymentDate, StringFormat='Data Pagamento: {0:dd/MM/yyyy}'}" FontSize="16"/>
+        <Label Text="{Binding Observation, StringFormat='Observação: {0}'}" FontSize="16" LineBreakMode="WordWrap"/>
 
         <CollectionView ItemsSource="{Binding Orders}">
             <CollectionView.ItemTemplate>
@@ -22,6 +25,12 @@
         </CollectionView>
 
         <Label Text="{Binding TotalSum, StringFormat='Total Geral: R$ {0:F2}'}" FontSize="18" FontAttributes="Bold"/>
+
+        <StackLayout x:Name="ActionButtons" IsVisible="False">
+            <Button Text="Send Charge" Clicked="OnSendChargeClicked"/>
+            <Button Text="Register Payment" Clicked="OnRegisterPaymentClicked"/>
+        </StackLayout>
+
         <Button Text="Fechar" Clicked="OnCloseClicked" />
     </VerticalStackLayout>
 </toolkit:Popup>
