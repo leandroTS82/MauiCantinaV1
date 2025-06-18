@@ -32,7 +32,9 @@
         <!-- Lista de Histórico com rolagem automática -->
         <CollectionView Grid.Row="1" 
                     ItemsSource="{Binding GroupedOrderHistories}" 
-                    IsGrouped="True">
+                    IsGrouped="True"
+                    SelectionMode="Single"
+                    SelectionChanged="OnItemTapped">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate>
                     <StackLayout BackgroundColor="LightGray" Padding="5">

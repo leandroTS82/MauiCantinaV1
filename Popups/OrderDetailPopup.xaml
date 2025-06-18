@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="CantinaV1.Popups.OrderDetailPopup">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="{Binding ClientName}" FontSize="20" FontAttributes="Bold"/>
+        <Label Text="{Binding Date, StringFormat='Data: {0:dd/MM/yyyy}'}" FontSize="16"/>
+        <Label Text="{Binding PaymentMethod, StringFormat='Pagamento: {0}'}" FontSize="16"/>
+
+        <CollectionView ItemsSource="{Binding Orders}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout Padding="5">
+                        <Label Text="{Binding ProductName}" FontAttributes="Bold"/>
+                        <Label Text="{Binding Quantity, StringFormat='Qtd: {0}'}"/>
+                        <Label Text="{Binding Price, StringFormat='Preço Unitário: R$ {0:F2}'}"/>
+                        <Label Text="{Binding Total, StringFormat='Total: R$ {0:F2}'}"/>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Label Text="{Binding TotalSum, StringFormat='Total Geral: R$ {0:F2}'}" FontSize="18" FontAttributes="Bold"/>
+        <Button Text="Fechar" Clicked="OnCloseClicked" />
+    </VerticalStackLayout>
+</toolkit:Popup>

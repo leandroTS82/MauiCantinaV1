@@ -71,6 +71,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Popups\OrderDetailPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\ConfigurationPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
