@@ -135,6 +135,7 @@ namespace CantinaV1.ViewModels
                     Date = g.Key.Date,
                     ClientName = g.Key.ClientName,
                     PaymentMethod = g.Key.PaymentMethod,
+                    Status = g.First().Status,
                     Total = g.Sum(x => x.Total)
                 })
                 .OrderByDescending(x => x.Date)

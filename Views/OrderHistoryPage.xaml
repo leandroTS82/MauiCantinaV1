@@ -46,8 +46,9 @@
                 <DataTemplate>
                     <StackLayout Padding="10" Orientation="Horizontal">
                         <Label Text="{Binding ClientName}" WidthRequest="120"/>
-                        <Label Text="{Binding Total, StringFormat='R$ {0:F2}'}" WidthRequest="120"/>
-                        <Label Text="{Binding PaymentMethod}" WidthRequest="120"/>
+                        <Label Text="{Binding Total, StringFormat='R$ {0:F2}'}" WidthRequest="90"/>
+                        <Label Text="{Binding PaymentMethod}" WidthRequest="95"/>
+                        <Label Text="{Binding Status}" WidthRequest="80"/>
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

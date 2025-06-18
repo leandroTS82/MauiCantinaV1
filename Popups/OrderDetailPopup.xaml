@@ -8,9 +8,10 @@
     <VerticalStackLayout Padding="20" Spacing="15">
 
         <!-- Seção Informações do Pedido -->
+        <Label Text="Informações do Pedido" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
         <Frame BorderColor="Gray" CornerRadius="10" Padding="10">
             <VerticalStackLayout Spacing="5">
-                <Label Text="{Binding ClientName}" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <Label Text="{Binding ClientName}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
                 <Label Text="{Binding Date, StringFormat='Data: {0:dd/MM/yyyy}'}" FontSize="16"/>
                 <Label Text="{Binding PaymentMethod, StringFormat='Pagamento: {0}'}" FontSize="16"/>
                 <Label Text="{Binding Status, StringFormat='Status: {0}'}" FontSize="16"/>
@@ -20,6 +21,7 @@
         </Frame>
 
         <!-- Seção Produtos -->
+        <Label Text="Produtos" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
         <Frame BorderColor="Gray" CornerRadius="10" Padding="10" HeightRequest="200">
             <CollectionView ItemsSource="{Binding Orders}">
                 <CollectionView.ItemTemplate>
