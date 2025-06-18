@@ -28,7 +28,7 @@ public partial class OrderDetailPopup : Popup
             TotalSum = _orderList.Sum(o => o.Total)
         };
 
-        if (firstOrder?.PaymentMethod == "Pagar depois")
+        if (firstOrder?.Status != "Pago")
         {
             ActionButtons.IsVisible = true;
         }
@@ -61,7 +61,6 @@ public partial class OrderDetailPopup : Popup
             {
                 order.Status = "Pago";
                 order.PaymentDate = DateTime.Now;
-                order.PaymentMethod = "Pix";
 
                 var orderHistoryService = new OrderHistoryService();
                 await orderHistoryService.UpdateAsync(order);

@@ -33,6 +33,18 @@ namespace CantinaV1.ViewModels
                 OnPropertyChanged();
             }
         }
+        public List<string> StatusList { get; } = new List<string> { "Todos", "Pendente", "Pago" };
+
+        private string selectedStatus;
+        public string SelectedStatus
+        {
+            get => selectedStatus;
+            set
+            {
+                selectedStatus = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand FilterCommand { get; }
 
@@ -47,6 +59,7 @@ namespace CantinaV1.ViewModels
             EndDate = DateTime.Now;
             StartDate = EndDate.AddMonths(-2);
             SelectedPaymentMethod = "Todos";
+            SelectedStatus = "Todos";
 
             FilterCommand = new Command(async () => await LoadData());
 
@@ -128,6 +141,11 @@ namespace CantinaV1.ViewModels
                 filtered = filtered.Where(item => item.PaymentMethod == SelectedPaymentMethod);
             }
 
+            if (SelectedStatus != "Todos")
+            {
+                filtered = filtered.Where(item => item.Status == SelectedStatus);
+            }
+
             var grouped = filtered
                 .GroupBy(item => new { Date = item.Date.Date, item.ClientName, item.PaymentMethod })
                 .Select(g => new OrderHistory
@@ -155,6 +173,7 @@ namespace CantinaV1.ViewModels
                     GroupedOrderHistories.Add(group);
             });
         }
+
     }
 
     public class OrderHistoryGroup : ObservableCollection<OrderHistory>
