@@ -110,12 +110,12 @@ namespace CantinaV1.ViewModels
                         await _ordersService.SaveItemAsync(order);
                     }
 
-                    await Shell.Current.DisplayAlert("Sucesso", "Importação concluída.", "OK");
+                   await Task.Run(async () => await LoadData());
                 }
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Erro", $"Falha na importação: {ex.Message}", "OK");
+                throw new Exception("Erro ao importar arquivo Excel: " + ex.Message, ex);
             }
         }
 
