@@ -2,35 +2,56 @@
 <toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:local="clr-namespace:CantinaV1.Popups"
                x:Class="CantinaV1.Popups.OrderDetailPopup">
-    <VerticalStackLayout Padding="20" Spacing="10">
-        <Label Text="{Binding ClientName}" FontSize="20" FontAttributes="Bold"/>
-        <Label Text="{Binding Date, StringFormat='Data: {0:dd/MM/yyyy}'}" FontSize="16"/>
-        <Label Text="{Binding PaymentMethod, StringFormat='Pagamento: {0}'}" FontSize="16"/>
-        <Label Text="{Binding Status, StringFormat='Status: {0}'}" FontSize="16"/>
-        <Label Text="{Binding PaymentDate, StringFormat='Data Pagamento: {0:dd/MM/yyyy}'}" FontSize="16"/>
-        <Label Text="{Binding Observation, StringFormat='Observação: {0}'}" FontSize="16" LineBreakMode="WordWrap"/>
 
-        <CollectionView ItemsSource="{Binding Orders}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <VerticalStackLayout Padding="5">
-                        <Label Text="{Binding ProductName}" FontAttributes="Bold"/>
-                        <Label Text="{Binding Quantity, StringFormat='Qtd: {0}'}"/>
-                        <Label Text="{Binding Price, StringFormat='Preço Unitário: R$ {0:F2}'}"/>
-                        <Label Text="{Binding Total, StringFormat='Total: R$ {0:F2}'}"/>
-                    </VerticalStackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+    <VerticalStackLayout Padding="20" Spacing="15">
 
-        <Label Text="{Binding TotalSum, StringFormat='Total Geral: R$ {0:F2}'}" FontSize="18" FontAttributes="Bold"/>
+        <!-- Seção Informações do Pedido -->
+        <Frame BorderColor="Gray" CornerRadius="10" Padding="10">
+            <VerticalStackLayout Spacing="5">
+                <Label Text="{Binding ClientName}" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <Label Text="{Binding Date, StringFormat='Data: {0:dd/MM/yyyy}'}" FontSize="16"/>
+                <Label Text="{Binding PaymentMethod, StringFormat='Pagamento: {0}'}" FontSize="16"/>
+                <Label Text="{Binding Status, StringFormat='Status: {0}'}" FontSize="16"/>
+                <Label Text="{Binding PaymentDate, StringFormat='Data Pagamento: {0:dd/MM/yyyy}'}" FontSize="16"/>
+                <Label Text="{Binding Observation, StringFormat='Observação: {0}'}" FontSize="16" LineBreakMode="WordWrap"/>
+            </VerticalStackLayout>
+        </Frame>
 
-        <StackLayout x:Name="ActionButtons" IsVisible="False">
-            <Button Text="Send Charge" Clicked="OnSendChargeClicked"/>
-            <Button Text="Register Payment" Clicked="OnRegisterPaymentClicked"/>
+        <!-- Seção Produtos -->
+        <Frame BorderColor="Gray" CornerRadius="10" Padding="10" HeightRequest="200">
+            <CollectionView ItemsSource="{Binding Orders}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout Padding="5">
+                            <Label Text="{Binding ProductName}" FontAttributes="Bold"/>
+                            <Label Text="{Binding Quantity, StringFormat='Qtd: {0}'}"/>
+                            <Label Text="{Binding Price, StringFormat='Preço Unitário: R$ {0:F2}'}"/>
+                            <Label Text="{Binding Total, StringFormat='Total: R$ {0:F2}'}"/>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Frame>
+
+        <!-- Total Geral -->
+        <Label Text="{Binding TotalSum, StringFormat='Total Geral: R$ {0:F2}'}" 
+               FontSize="18" 
+               FontAttributes="Bold" 
+               HorizontalOptions="Center"/>
+
+        <!-- Ações -->
+        <StackLayout x:Name="ActionButtons" IsVisible="False" Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+            <Button Text="🔔 Cobrar" Clicked="OnSendChargeClicked"/>
+            <Button Text="✅ Registrar Pagamento" Clicked="OnRegisterPaymentClicked"/>
         </StackLayout>
 
-        <Button Text="Fechar" Clicked="OnCloseClicked" />
+        <!-- Feedback -->
+        <Label x:Name="FeedbackLabel" Text="" TextColor="Green" FontAttributes="Bold" IsVisible="False" HorizontalOptions="Center" />
+
+        <!-- Fechar -->
+        <Button Text="Fechar" Clicked="OnCloseClicked" HorizontalOptions="Center" />
+
     </VerticalStackLayout>
 </toolkit:Popup>
