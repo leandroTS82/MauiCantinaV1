@@ -51,7 +51,7 @@ function List-FolderContent {
 }
 
 # Escreve cabeçalho
-Add-Content $outputFile "MauiCantinaV1"
+Add-Content $outputFile "CantinaV1"
 Add-Content $outputFile "│"
 
 foreach ($folder in $foldersToList) {
