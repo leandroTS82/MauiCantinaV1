@@ -1,4 +1,6 @@
-﻿using CantinaV1.Services.Internals;
+﻿using CantinaV1.Popups;
+using CantinaV1.Services.Internals;
+using CommunityToolkit.Maui.Views;
 
 namespace CantinaV1.Views
 {
@@ -36,5 +38,16 @@ namespace CantinaV1.Views
         {
             await Navigation.PushAsync(new OrderHistoryPage());
         }
+        private async void GoToContactsPage(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ContactsPage());
+        }
+
+        private async void ShowHelpPopup(object sender, EventArgs e)
+        {
+            var popup = new InstructionsPopup();
+            await this.ShowPopupAsync(popup);
+        }
+
     }
 }

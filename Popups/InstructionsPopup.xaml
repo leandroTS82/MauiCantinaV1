@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="CantinaV1.Popups.InstructionsPopup">
+
+    <VerticalStackLayout Padding="20" Spacing="12">
+        <Label Text="Como usar a Cantina"
+               FontSize="22"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="#2C3E50" />
+
+        <Label Text="1 - Vá em 'Produtos' e cadastre os itens que serão vendidos e seus preços." FontSize="16" TextColor="#555" />
+        <Label Text="2 - Em 'Pedidos', registre os pedidos com nome, quantidade e forma de pagamento. No final, clique em 'Exportar' para gerar e compartilhar o relatório do caixa." FontSize="16" TextColor="#555" />
+        <Label Text="3 - Em 'Painel de pedidos recebidos', é possível receber os pedidos feitos pelo caixa. Isso precisa ser ajustado nas configurações." FontSize="16" TextColor="#555" />
+        <Label Text="4 - Em 'Configurações', você pode ativar o envio de pedidos para o balcão via APP ou WhatsApp." FontSize="16" TextColor="#555" />
+
+        <Button Text="Fechar" Clicked="OnCloseClicked" />
+    </VerticalStackLayout>
+</toolkit:Popup>

@@ -1,5 +1,6 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="CantinaV1.Views.MainPage"
              Title="Cantina"
              BackgroundColor="#F9F9F9">
@@ -10,6 +11,11 @@
                      Order="Primary"
                      Priority="0"
                      Clicked="GoToAdvancedSettingsPage" />
+        <ToolbarItem Text="Ajuda"
+                     IconImageSource="help.png"
+                     Order="Primary"
+                     Priority="1"
+                     Clicked="ShowHelpPopup" />
     </ContentPage.ToolbarItems>
 
     <ScrollView>
@@ -21,7 +27,6 @@
                    FontAttributes="Bold"
                    TextColor="#2C3E50" />
 
-            <!-- Botões principais -->
             <VerticalStackLayout Spacing="16">
 
                 <Frame CornerRadius="16" BackgroundColor="#3498DB" HasShadow="True" Padding="12">
@@ -56,7 +61,7 @@
                             Clicked="GoToConfigurationPage" />
                 </Frame>
 
-                <Frame CornerRadius="16" BackgroundColor="#F39C12" HasShadow="True" Padding="12"> 
+                <Frame CornerRadius="16" BackgroundColor="#F39C12" HasShadow="True" Padding="12">
                     <Button Text="📊 Histórico de Pedidos"
                             FontSize="22"
                             BackgroundColor="Transparent"
@@ -64,37 +69,15 @@
                             Clicked="GoToOrderHistoryPage" />
                 </Frame>
 
+                <Frame CornerRadius="16" BackgroundColor="#8E44AD" HasShadow="True" Padding="12">
+                    <Button Text="📇 Contatos"
+                            FontSize="22"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Clicked="GoToContactsPage" />
+                </Frame>
+
             </VerticalStackLayout>
-
-            <!-- Instruções de uso -->
-            <Frame BackgroundColor="White"
-                   CornerRadius="16"
-                   Padding="20"
-                   HasShadow="True"
-                   BorderColor="#D0D3D4">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Como usar a Cantina"
-                           FontSize="22"
-                           FontAttributes="Bold"
-                           TextColor="#2C3E50" />
-
-                    <Label Text="1 - Vá em 'Produtos' e cadastre os itens que serão vendidos e seus preços."
-                           FontSize="16"
-                           TextColor="#555" />
-
-                    <Label Text="2 - Em 'Pedidos', registre os pedidos com nome, quantidade e forma de pagamento. No final, clique em 'Exportar' para gerar e compartilhar o relatório do caixa."
-                           FontSize="16"
-                           TextColor="#555" />
-
-                    <Label Text="3 - Em 'Painel de pedidos recebidos', é possível receber os pedidos feitos pelo caixa. Isso precisa ser ajustado nas configurações."
-                           FontSize="16"
-                           TextColor="#555" />
-
-                    <Label Text="4 - Em 'Configurações', você pode ativar o envio de pedidos para o balcão via APP ou WhatsApp."
-                           FontSize="16"
-                           TextColor="#555" />
-                </VerticalStackLayout>
-            </Frame>
 
         </VerticalStackLayout>
     </ScrollView>

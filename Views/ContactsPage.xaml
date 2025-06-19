@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CantinaV1.ViewModels"
+             x:Class="CantinaV1.Views.ContactsPage"
+             x:Name="Page"
+             Title="Contacts"
+             BackgroundColor="White">
+
+    <ContentPage.BindingContext>
+        <viewModels:ContactsViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="15">
+
+            <!-- Formulário -->
+            <Frame BorderColor="Gray" CornerRadius="5" Padding="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Contatos" FontAttributes="Bold" FontSize="18" />
+                    <Entry Placeholder="Client Name" Text="{Binding ClientName, Mode=TwoWay}" />
+                    <Entry Placeholder="Number (e.g., 11987823588)" Text="{Binding Number, Mode=TwoWay}" Keyboard="Numeric" MaxLength="11"/>
+                    <Button Text="Save Contact" Command="{Binding SaveContactCommand}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Botões Importar e Excluir Todos -->
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="Importar" Command="{Binding ImportXlsxCommand}" />
+                <Button Text="Excluir tudo" Command="{Binding DeleteAllContactsCommand}" BackgroundColor="Red" TextColor="White"/>
+            </HorizontalStackLayout>
+
+            <!-- Lista de contatos -->
+            <Label Text="Contacts List" FontAttributes="Bold" FontSize="18" />
+            <CollectionView ItemsSource="{Binding Contacts}"
+                            SelectionMode="Single"
+                            SelectionChanged="CollectionView_SelectionChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="LightGray" CornerRadius="5" Padding="10" Margin="0,5">
+                            <HorizontalStackLayout Spacing="20">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding ClientName}" FontSize="16" />
+                                    <Label Text="{Binding Number}" FontSize="16" />
+                                </VerticalStackLayout>
+                                <ImageButton Source="delete_icon.png"
+                                             Command="{Binding BindingContext.DeleteContactCommand, Source={x:Reference Page}}"
+                                             CommandParameter="{Binding .}"
+                                             BackgroundColor="Transparent"
+                                             WidthRequest="30"
+                                             HeightRequest="30"
+                                             HorizontalOptions="EndAndExpand" />
+                            </HorizontalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

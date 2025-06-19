@@ -15,34 +15,14 @@ namespace CantinaV1.Data
             _database.CreateTableAsync<OrderItem>().Wait();
             _database.CreateTableAsync<GenericConfiguration>().Wait();
             _database.CreateTableAsync<OrderHistory>().Wait();
+            _database.CreateTableAsync<ContactModel>().Wait(); // Novo
         }
 
-        // Método genérico para obter todos os registros de qualquer tipo de tabela
-        public Task<List<T>> GetAllAsync<T>() where T : new()
-        {
-            return _database.Table<T>().ToListAsync();
-        }
-        // Método genérico para excluir todos os registros de qualquer tipo de tabela
-        public Task<int> DeleteAllAsync<T>() where T : new()
-        {
-            return _database.DeleteAllAsync<T>();
-        }
-        // Método genérico para excluir um registro específico de qualquer tipo de tabela
-        public Task<int> DeleteAsync<T>(T item) where T : new()
-        {
-            return _database.DeleteAsync(item);
-        }
-        // Método genérico para inserir um registro em qualquer tipo de tabela
-        public Task<int> InsertAsync<T>(T item) where T : new()
-        {
-            return _database.InsertAsync(item);
-        }
-        // Método genérico para atualizar um registro em qualquer tipo de tabela
-        public Task<int> UpdateAsync<T>(T item) where T : new()
-        {
-            return _database.UpdateAsync(item);
-        }       
-
+        public Task<List<T>> GetAllAsync<T>() where T : new() => _database.Table<T>().ToListAsync();
+        public Task<int> DeleteAllAsync<T>() where T : new() => _database.DeleteAllAsync<T>();
+        public Task<int> DeleteAsync<T>(T item) where T : new() => _database.DeleteAsync(item);
+        public Task<int> InsertAsync<T>(T item) where T : new() => _database.InsertAsync(item);
+        public Task<int> UpdateAsync<T>(T item) where T : new() => _database.UpdateAsync(item);
 
         // refatoração de detalhe de pedido pendente
 
