@@ -26,10 +26,10 @@ public class PollingFirebaseOrderService
             {
                 try
                 {
-                    var orders = await _firebaseService.BuscarPedidosPorOrderKeyAsync(_orderKey);
+                    var orders = await _firebaseService.GetOrdersByOrderKeyAsync(_orderKey);
 
                     // Só atualiza se houve mudanças
-                    var novosIds = orders.Select(p => p.Id).ToList();
+                    var novosIds = orders.Select(p => p.OrderKey).ToList();
                     if (!_lastKnownIds.SequenceEqual(novosIds))
                     {
                         _lastKnownIds = novosIds;
