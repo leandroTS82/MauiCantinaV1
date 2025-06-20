@@ -43,6 +43,7 @@ public partial class OrderDetailPopup : Popup
         try
         {
             var whatsappService = new WhatsAppService();
+            var contactsService = new ContactsService();
             WhatsappMessageConfigModel? whatsChargeConfig = await whatsappService.LoadWhatsAppChargeConfiguration();
 
             if (whatsChargeConfig == null)
@@ -67,6 +68,29 @@ public partial class OrderDetailPopup : Popup
                 return;
             }
 
+            // Obtém o nome do cliente do primeiro pedido
+            string clientName = _orderList.FirstOrDefault()?.ClientName?.Trim();
+
+            if (string.IsNullOrEmpty(clientName))
+            {
+                FeedbackLabel.Text = "Nome do cliente não encontrado no pedido.";
+                FeedbackLabel.TextColor = Colors.Red;
+                FeedbackLabel.IsVisible = true;
+                return;
+            }
+
+            // Busca o contato do cliente
+            var contacts = await contactsService.GetAllAsync();
+            var clientContact = contacts.FirstOrDefault(c => c.ClientName.Equals(clientName, StringComparison.OrdinalIgnoreCase));
+
+            if (clientContact == null || string.IsNullOrWhiteSpace(clientContact.Number))
+            {
+                FeedbackLabel.Text = "Número do cliente não encontrado nos contatos.";
+                FeedbackLabel.TextColor = Colors.Red;
+                FeedbackLabel.IsVisible = true;
+                return;
+            }
+
             // Calcular o valor total pendente
             decimal totalPendente = _orderList.Sum(o => o.Total);
             string orderValue = $"R$ {totalPendente:0.00}";
@@ -77,7 +101,10 @@ public partial class OrderDetailPopup : Popup
                 whatsChargeConfig.Pix,
                 orderValue);
 
-            await whatsappService.SendMessage("5511987823588", chargeMessage);
+            // Monta o número completo (adiciona o 55 para o Brasil se necessário)
+            string phoneNumber = clientContact.Number.StartsWith("55") ? clientContact.Number : $"55{clientContact.Number}";
+
+            await whatsappService.SendMessage(phoneNumber, chargeMessage);
 
             FeedbackLabel.Text = "Mensagem de cobrança enviada com sucesso!";
             FeedbackLabel.TextColor = Colors.Green;
@@ -90,6 +117,7 @@ public partial class OrderDetailPopup : Popup
             FeedbackLabel.IsVisible = true;
         }
     }
+
 
 
     private async void OnRegisterPaymentClicked(object sender, EventArgs e)

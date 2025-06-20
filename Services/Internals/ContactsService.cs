@@ -8,7 +8,7 @@ namespace CantinaV1.Services.Internals
         private readonly Database _database;
         public ContactsService()
         {
-            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "cantina.db4");
             _database = new Database(dbPath);
         }
