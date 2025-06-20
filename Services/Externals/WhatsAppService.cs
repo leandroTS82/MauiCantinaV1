@@ -37,8 +37,6 @@ namespace CantinaV1.Services.Externals
                 Debug.WriteLine($"Erro ao enviar mensagem via WhatsApp: {ex.Message}");
             }
         }
-
-
         internal async Task SendOrderAsync(List<OrderItem> orderItemsToSave)
         {
             if (orderItemsToSave == null || !orderItemsToSave.Any())
@@ -92,8 +90,6 @@ namespace CantinaV1.Services.Externals
                 Debug.WriteLine($"Erro ao enviar o pedido: {ex.Message}");
             }
         }
-
-
         internal async Task SendOrdersToCustomNumberAsync(List<OrderItem> orders, List<Product> products, string phoneNumber)
         {
             if (orders == null || !orders.Any())
@@ -169,6 +165,30 @@ namespace CantinaV1.Services.Externals
                 Debug.WriteLine($"Erro ao abrir o WhatsApp: {ex.Message}");
             }
         }
+        internal async Task<WhatsappMessageConfigModel> LoadWhatsAppChargeConfiguration()
+        {
+            WhatsappMessageConfigModel whatsConfig = new WhatsappMessageConfigModel();
+            var dateConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargeDate");
+            var pixConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargePix");
+            var messageConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargeMessage");
 
+            if (dateConfig != null && DateTime.TryParse(dateConfig.Value, out DateTime parsedDate))
+                whatsConfig.Date = parsedDate;
+            if (pixConfig != null)
+                whatsConfig.Pix = pixConfig.Value;
+            if (messageConfig != null)
+                whatsConfig.Message = messageConfig.Value;
+            return whatsConfig;
+        }
+
+        internal string BuildChargeMessage(string message, string paymentDate, string pix, string orderValue)
+        {
+            string chargeMessage  = $"\n{message}\n" +
+                                 $"Data para pagamento: {paymentDate}\n" +
+                                 $"Valor: {orderValue}\n" +
+                                 $"Chave PIX: {pix}";
+            return chargeMessage;
+
+        }
     }
 }

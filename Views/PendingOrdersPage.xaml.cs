@@ -1,5 +1,6 @@
 ﻿using CantinaV1.Models;
 using CantinaV1.Popups;
+using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
 using CommunityToolkit.Maui.Views;
 
@@ -21,36 +22,30 @@ namespace CantinaV1.Views
 
         private async void LoadWhatsAppChargeConfiguration()
         {
-            var dateConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargeDate");
-            var pixConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargePix");
-            var messageConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargeMessage");
-            var toggleConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargeToggle");
+            WhatsAppService whatsappService = new WhatsAppService();
+            var whatsconfig = await whatsappService.LoadWhatsAppChargeConfiguration();
+            GenericConfiguration? toggleConfig = await _genericConfigurationServices.GetGenericConfigurationAsync("WhatsAppChargeToggle");
 
-            if (dateConfig != null && DateTime.TryParse(dateConfig.Value, out DateTime parsedDate))
-                entryChargeDate.Date = parsedDate;
+            entryChargeDate.Date = whatsconfig.Date;
 
-            if (pixConfig != null)
-                entryChargePix.Text = pixConfig.Value;
+            if (whatsconfig.Pix != null)
+                entryChargePix.Text = whatsconfig.Pix;
 
-            if (messageConfig != null)
-                editorChargeMessage.Text = messageConfig.Value;
+            if (whatsconfig.Message != null)
+                editorChargeMessage.Text = whatsconfig.Message;
 
             if (toggleConfig != null)
                 switchChargeToggle.IsToggled = Convert.ToBoolean(toggleConfig.Value);
         }
         private async void OnPreviewMessageClicked(object sender, EventArgs e)
         {
-            string mensagem = editorChargeMessage.Text;
-            string dataPagamento = entryChargeDate.Date.ToString("dd/MM/yyyy");
+            string message = editorChargeMessage.Text;
+            string paymentDate = entryChargeDate.Date.ToString("dd/MM/yyyy");
             string pix = entryChargePix.Text;
-            string valorPedido = "R$ x,xx"; 
-
-            string previewText = $"\n{mensagem}\n" +
-                                 $"Data para pagamento: {dataPagamento}\n" +
-                                 $"Valor: {valorPedido}\n" +
-                                 $"Chave PIX: {pix}";
-
-            var popup = new MessagePreviewPopup(previewText);
+            string orderValue = "R$ x,xx";
+            WhatsAppService whatsappService = new WhatsAppService();
+            string chargeMessage = whatsappService.BuildChargeMessage(message, paymentDate, pix, orderValue);            
+            var popup = new MessagePreviewPopup(chargeMessage);
             this.ShowPopup(popup);
         }
 
@@ -60,7 +55,7 @@ namespace CantinaV1.Views
             formSection.IsVisible = isFormVisible;
 
             // Atualiza o texto do botão conforme visibilidade
-            toggleFormButton.Text = isFormVisible ? "Ocultar parâmetros" : "Mostrar parâmetros";
+            toggleFormButton.Text = isFormVisible ? "▲ Ocultar parâmetros" : "▼ Mostrar parâmetro";
         }
 
         private async void OnChargeToggleChanged(object sender, ToggledEventArgs e)

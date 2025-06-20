@@ -13,7 +13,7 @@
 
         <!-- Botão para expandir/recolher -->
         <Button x:Name="toggleFormButton"
-                Text="Ocultar parâmetros"
+                Text="▲ Ocultar parâmetros"
                 Clicked="OnToggleFormButtonClicked"
                 Grid.Row="0"
                 HorizontalOptions="End" />

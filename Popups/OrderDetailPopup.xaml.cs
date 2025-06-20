@@ -1,3 +1,4 @@
+using AndroidX.Annotations;
 using CantinaV1.Models;
 using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
@@ -8,6 +9,9 @@ namespace CantinaV1.Popups;
 public partial class OrderDetailPopup : Popup
 {
     private readonly List<OrderHistory> _orderList;
+    private GenericConfiguration? _dateConfig;
+    private GenericConfiguration? _pixConfig;
+    private GenericConfiguration? _messageConfig;
 
     public OrderDetailPopup(IEnumerable<OrderHistory> orderHistories)
     {
@@ -39,8 +43,42 @@ public partial class OrderDetailPopup : Popup
         try
         {
             var whatsappService = new WhatsAppService();
-            string message = "Olá! Há um pagamento pendente na Cantina. Por favor, verifique.";
-            await whatsappService.SendMessage("5511987823588", message);
+            WhatsappMessageConfigModel? whatsChargeConfig = await whatsappService.LoadWhatsAppChargeConfiguration();
+
+            if (whatsChargeConfig == null)
+            {
+                FeedbackLabel.Text = "Configuração de cobrança não encontrada.";
+                FeedbackLabel.TextColor = Colors.Red;
+                FeedbackLabel.IsVisible = true;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(whatsChargeConfig.Message) || string.IsNullOrWhiteSpace(whatsChargeConfig.Pix))
+            {
+                FeedbackLabel.Text = "Mensagem ou PIX não configurados.";
+                FeedbackLabel.TextColor = Colors.Red;
+                FeedbackLabel.IsVisible = true;
+                return;
+            }
+            if (whatsChargeConfig.Date == default)
+            {
+                FeedbackLabel.Text = "Data para pagamento não configurada.";
+                FeedbackLabel.TextColor = Colors.Red;
+                FeedbackLabel.IsVisible = true;
+                return;
+            }
+
+            // Calcular o valor total pendente
+            decimal totalPendente = _orderList.Sum(o => o.Total);
+            string orderValue = $"R$ {totalPendente:0.00}";
+
+            string chargeMessage = whatsappService.BuildChargeMessage(
+                whatsChargeConfig.Message,
+                whatsChargeConfig.Date.ToString("dd/MM/yyyy"),
+                whatsChargeConfig.Pix,
+                orderValue);
+
+            await whatsappService.SendMessage("5511987823588", chargeMessage);
+
             FeedbackLabel.Text = "Mensagem de cobrança enviada com sucesso!";
             FeedbackLabel.TextColor = Colors.Green;
             FeedbackLabel.IsVisible = true;
@@ -52,6 +90,7 @@ public partial class OrderDetailPopup : Popup
             FeedbackLabel.IsVisible = true;
         }
     }
+
 
     private async void OnRegisterPaymentClicked(object sender, EventArgs e)
     {
