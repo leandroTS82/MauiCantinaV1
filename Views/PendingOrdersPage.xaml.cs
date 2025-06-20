@@ -1,4 +1,4 @@
-using CantinaV1.Models;
+﻿using CantinaV1.Models;
 using CantinaV1.Popups;
 using CantinaV1.Services.Internals;
 using CommunityToolkit.Maui.Views;
@@ -9,6 +9,7 @@ namespace CantinaV1.Views
     {
         private readonly OrderHistoryService _historyService;
         private readonly GenericConfigurationServices _genericConfigurationServices;
+        private bool isFormVisible = true;
 
         public PendingOrdersPage()
         {
@@ -51,6 +52,15 @@ namespace CantinaV1.Views
 
             var popup = new MessagePreviewPopup(previewText);
             this.ShowPopup(popup);
+        }
+
+        private void OnToggleFormButtonClicked(object sender, EventArgs e)
+        {
+            isFormVisible = !isFormVisible;
+            formSection.IsVisible = isFormVisible;
+
+            // Atualiza o texto do botão conforme visibilidade
+            toggleFormButton.Text = isFormVisible ? "Ocultar parâmetros" : "Mostrar parâmetros";
         }
 
         private async void OnChargeToggleChanged(object sender, ToggledEventArgs e)

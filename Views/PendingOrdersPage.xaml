@@ -9,13 +9,20 @@
         <viewModels:PendingOrdersViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto,*" Padding="10">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="10">
+
+        <!-- Botão para expandir/recolher -->
+        <Button x:Name="toggleFormButton"
+                Text="Ocultar parâmetros"
+                Clicked="OnToggleFormButtonClicked"
+                Grid.Row="0"
+                HorizontalOptions="End" />
 
         <!-- Formulário fixo no topo -->
-        <VerticalStackLayout Spacing="10" Grid.Row="0">
+        <VerticalStackLayout x:Name="formSection" Spacing="10" Grid.Row="1">
 
             <Label Text="Parâmetros de cobrança via WhatsApp" 
-                   FontSize="24" 
+                   FontSize="18" 
                    FontAttributes="Bold" 
                    HorizontalOptions="Center" />
 
@@ -30,13 +37,8 @@
 
                     <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center" Padding="0">
 
-                        <!-- Switch alinhado à esquerda -->
                         <Switch x:Name="switchChargeToggle" Grid.Column="0" Toggled="OnChargeToggleChanged" />
-
-                        <!-- Label no centro ocupando o espaço restante -->
                         <Label Text="Salvar parâmetros" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" />
-
-                        <!-- Botão 📄 alinhado à direita e discreto -->
                         <Button Text="📄"
                                 Grid.Column="2"
                                 Clicked="OnPreviewMessageClicked"
@@ -55,7 +57,7 @@
         </VerticalStackLayout>
 
         <!-- Lista com scroll -->
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="2"
                         ItemsSource="{Binding GroupedPendingOrders}"
                         IsGrouped="True"
                         SelectionMode="Single"
