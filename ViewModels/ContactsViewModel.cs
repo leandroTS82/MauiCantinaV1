@@ -108,7 +108,7 @@ namespace CantinaV1.ViewModels
                         string name = row.Cell(1).GetString();
                         string number = row.Cell(2).GetString();
 
-                        if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(number) && number.All(char.IsDigit) && number.Length == 11)
+                        if (!string.IsNullOrEmpty(name))
                         {
                             await _contactsService.SaveItemAsync(new ContactModel { ClientName = name.Trim(), Number = number.Trim() });
                         }
