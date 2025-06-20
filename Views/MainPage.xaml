@@ -68,6 +68,13 @@
                             TextColor="White"
                             Clicked="GoToOrderHistoryPage" />
                 </Frame>
+                <Frame CornerRadius="16" BackgroundColor="#F39C12" HasShadow="True" Padding="12">
+                    <Button Text="📊 Pedidos Pendentes"
+                            FontSize="22"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Clicked="GoToPendingOrdersPage" />
+                </Frame>
 
                 <Frame CornerRadius="16" BackgroundColor="#8E44AD" HasShadow="True" Padding="12">
                     <Button Text="📇 Contatos"

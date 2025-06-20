@@ -1,0 +1,32 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CantinaV1.ViewModels"
+             x:Class="CantinaV1.Views.PendingOrdersPage"
+             Title="Pedidos Pendentes">
+
+    <ContentPage.BindingContext>
+        <viewModels:PendingOrdersViewModel />
+    </ContentPage.BindingContext>
+
+    <CollectionView ItemsSource="{Binding GroupedPendingOrders}"
+                    IsGrouped="True"
+                    SelectionMode="Single"
+                    SelectionChanged="OnItemTapped">
+        <CollectionView.GroupHeaderTemplate>
+            <DataTemplate>
+                <StackLayout BackgroundColor="LightGray" Padding="5">
+                    <Label Text="{Binding Date}" FontAttributes="Bold" />
+                </StackLayout>
+            </DataTemplate>
+        </CollectionView.GroupHeaderTemplate>
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <StackLayout Padding="10" Orientation="Horizontal">
+                    <Label Text="{Binding ClientName}" WidthRequest="150"/>
+                    <Label Text="{Binding Total, StringFormat='R$ {0:F2}'}" WidthRequest="100"/>
+                    <Label Text="{Binding Status}" WidthRequest="100"/>
+                </StackLayout>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

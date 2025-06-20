@@ -1,5 +1,4 @@
 ﻿using CantinaV1.Popups;
-using CantinaV1.Services.Internals;
 using CommunityToolkit.Maui.Views;
 
 namespace CantinaV1.Views
@@ -49,5 +48,9 @@ namespace CantinaV1.Views
             await this.ShowPopupAsync(popup);
         }
 
+        private async void GoToPendingOrdersPage(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new PendingOrdersPage());
+        }
     }
 }
