@@ -74,6 +74,9 @@
 		<MauiXaml Update="Popups\InstructionsPopup.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Popups\MessagePreviewPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Popups\OrderDetailPopup.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="CantinaV1.Popups.MessagePreviewPopup">
+
+    <Frame Padding="20" CornerRadius="10" BackgroundColor="White">
+        <VerticalStackLayout Spacing="10">
+            <Label Text="Prévia da mensagem" FontAttributes="Bold" FontSize="18" HorizontalOptions="Center" />
+            <Label x:Name="labelPreview" FontSize="14" TextColor="Black" />
+            <Button Text="Fechar" Clicked="OnCloseClicked" />
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CantinaV1.ViewModels"
@@ -8,25 +9,74 @@
         <viewModels:PendingOrdersViewModel />
     </ContentPage.BindingContext>
 
-    <CollectionView ItemsSource="{Binding GroupedPendingOrders}"
-                    IsGrouped="True"
-                    SelectionMode="Single"
-                    SelectionChanged="OnItemTapped">
-        <CollectionView.GroupHeaderTemplate>
-            <DataTemplate>
-                <StackLayout BackgroundColor="LightGray" Padding="5">
-                    <Label Text="{Binding Date}" FontAttributes="Bold" />
-                </StackLayout>
-            </DataTemplate>
-        </CollectionView.GroupHeaderTemplate>
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <StackLayout Padding="10" Orientation="Horizontal">
-                    <Label Text="{Binding ClientName}" WidthRequest="150"/>
-                    <Label Text="{Binding Total, StringFormat='R$ {0:F2}'}" WidthRequest="100"/>
-                    <Label Text="{Binding Status}" WidthRequest="100"/>
-                </StackLayout>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <Grid RowDefinitions="Auto,*" Padding="10">
+
+        <!-- Formulário fixo no topo -->
+        <VerticalStackLayout Spacing="10" Grid.Row="0">
+
+            <Label Text="Parâmetros de cobrança via WhatsApp" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="#F5F5F5">
+                <VerticalStackLayout Spacing="15">
+
+                    <DatePicker x:Name="entryChargeDate" Format="dd/MM/yyyy" />
+
+                    <Entry x:Name="entryChargePix" Placeholder="Chave PIX" />
+
+                    <Editor x:Name="editorChargeMessage" Placeholder="Mensagem personalizada" AutoSize="TextChanges" />
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center" Padding="0">
+
+                        <!-- Switch alinhado à esquerda -->
+                        <Switch x:Name="switchChargeToggle" Grid.Column="0" Toggled="OnChargeToggleChanged" />
+
+                        <!-- Label no centro ocupando o espaço restante -->
+                        <Label Text="Salvar parâmetros" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" />
+
+                        <!-- Botão 📄 alinhado à direita e discreto -->
+                        <Button Text="📄"
+                                Grid.Column="2"
+                                Clicked="OnPreviewMessageClicked"
+                                BackgroundColor="LightYellow"
+                                BorderWidth="0"
+                                Padding="0"
+                                WidthRequest="30"
+                                HeightRequest="30"
+                                FontSize="18"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+
+        <!-- Lista com scroll -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding GroupedPendingOrders}"
+                        IsGrouped="True"
+                        SelectionMode="Single"
+                        SelectionChanged="OnItemTapped">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <StackLayout BackgroundColor="LightGray" Padding="5">
+                        <Label Text="{Binding Date}" FontAttributes="Bold" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" Orientation="Horizontal">
+                        <Label Text="{Binding ClientName}" WidthRequest="150"/>
+                        <Label Text="{Binding Total, StringFormat='R$ {0:F2}'}" WidthRequest="100"/>
+                        <Label Text="{Binding Status}" WidthRequest="100"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
 </ContentPage>
