@@ -1,4 +1,5 @@
 ﻿using CantinaV1.Models;
+using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
 using ClosedXML.Excel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,6 +10,7 @@ namespace CantinaV1.ViewModels
     public class ContactsViewModel : BindableObject
     {
         private readonly ContactsService _contactsService = new();
+        private readonly XlsxService _xlsxService = new();
         public ObservableCollection<ContactModel> Contacts { get; set; } = new();
 
         public IRelayCommand ImportXlsxCommand { get; }
@@ -48,7 +50,7 @@ namespace CantinaV1.ViewModels
 
         public ContactsViewModel()
         {
-            ImportXlsxCommand = new RelayCommand(async () => await ImportXlsxAsync());
+            ImportXlsxCommand = new RelayCommand(async () => await _xlsxService.ImportContactXlsxAsync());
             SaveContactCommand = new RelayCommand(async () => await SaveContactAsync());
             DeleteAllContactsCommand = new RelayCommand(async () => await DeleteAllContactsAsync());
             DeleteContactCommand = new RelayCommand<ContactModel>(async (contact) => await DeleteContactAsync(contact));
@@ -78,49 +80,7 @@ namespace CantinaV1.ViewModels
 
             await LoadContacts();
             ClientName = Number = string.Empty;
-        }
-
-        private async Task ImportXlsxAsync()
-        {
-            try
-            {
-                var result = await FilePicker.PickAsync(new PickOptions
-                {
-                    PickerTitle = "Selecione o arquivo excel",
-                    FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-                    {
-                        { DevicePlatform.Android, new[] { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } },
-                        { DevicePlatform.WinUI, new[] { ".xlsx" } },
-                        { DevicePlatform.iOS, new[] { "com.microsoft.excel.xlsx" } },
-                        { DevicePlatform.MacCatalyst, new[] { "com.microsoft.excel.xlsx" } }
-                    })
-                });
-
-                if (result != null)
-                {
-                    using var stream = await result.OpenReadAsync();
-                    using var workbook = new XLWorkbook(stream);
-                    var worksheet = workbook.Worksheet(1);
-                    var rows = worksheet.RowsUsed().Skip(1);
-
-                    foreach (var row in rows)
-                    {
-                        string name = row.Cell(1).GetString();
-                        string number = row.Cell(2).GetString();
-
-                        if (!string.IsNullOrEmpty(name))
-                        {
-                            await _contactsService.SaveItemAsync(new ContactModel { ClientName = name.Trim(), Number = number.Trim() });
-                        }
-                    }
-                    await LoadContacts();
-                }
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
-            }
-        }
+        }       
 
         private async Task DeleteAllContactsAsync()
         {

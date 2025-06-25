@@ -1,7 +1,6 @@
 ﻿using CantinaV1.Models;
 using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
-using ClosedXML.Excel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -14,6 +13,7 @@ namespace CantinaV1.ViewModels
         private readonly XlsxService _xlsxService = new();
 
         public IRelayCommand ImportXlsxCommand { get; }
+        public IRelayCommand ExportXlsxCommand { get; }
         public ICommand RegisterPaymentCommand { get; }
 
         private readonly OrderHistoryService _historyService;
@@ -54,6 +54,22 @@ namespace CantinaV1.ViewModels
             GroupedOrderHistories = new ObservableCollection<OrderHistoryGroup>();
 
             ImportXlsxCommand = new RelayCommand(async () => await ImportXlsxAsync());
+            async Task ImportXlsxAsync()
+            {
+                var orders = await _xlsxService.ImportOrderHistoryXlsxAsync();
+
+                if (orders.Count > 0)
+                {
+                    foreach (var order in orders)
+                    {
+                        await _ordersService.SaveItemAsync(order);
+                    }
+
+                    await LoadData();
+                }
+            }
+            ExportXlsxCommand = new RelayCommand(async () => await ExportXlsxAsync());
+
             RegisterPaymentCommand = new RelayCommand<OrderHistory>(async (order) => await RegisterPayment(order));
 
             EndDate = DateTime.Now;
@@ -66,58 +82,28 @@ namespace CantinaV1.ViewModels
             Task.Run(async () => await LoadData());
         }
 
-        private async Task ImportXlsxAsync()
+        private async Task ExportXlsxAsync()
         {
-            try
+            var allItems = await _historyService.GetAllAsync();
+
+            var filtered = allItems
+                .Where(item => item.Date.Date >= StartDate.Date && item.Date.Date <= EndDate.Date);
+
+            if (SelectedPaymentMethod != "Todos")
             {
-                var result = await FilePicker.PickAsync(new PickOptions
-                {
-                    PickerTitle = "Selecione o arquivo Excel",
-                    FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-                    {
-                        { DevicePlatform.Android, new[] { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } },
-                        { DevicePlatform.WinUI, new[] { ".xlsx" } },
-                        { DevicePlatform.iOS, new[] { "com.microsoft.excel.xlsx" } },
-                        { DevicePlatform.MacCatalyst, new[] { "com.microsoft.excel.xlsx" } }
-                    })
-                });
-
-                if (result != null)
-                {
-                    using var stream = await result.OpenReadAsync();
-                    using var workbook = new XLWorkbook(stream);
-                    var worksheet = workbook.Worksheet(1);
-                    var rows = worksheet.RowsUsed().Skip(1);
-
-                    foreach (var row in rows)
-                    {
-                        var paymentMethod = row.Cell(7).GetString();
-                        var status = paymentMethod == "Pagar depois" ? "Pendente" : "Pago";
-
-                        var order = new OrderHistory
-                        {
-                            Date = DateTime.Parse(row.Cell(1).GetString()),
-                            ClientName = row.Cell(2).GetString(),
-                            ProductName = row.Cell(3).GetString(),
-                            Price = decimal.Parse(row.Cell(4).GetString().Replace("R$", "").Trim()),
-                            Quantity = int.Parse(row.Cell(5).GetString()),
-                            Total = decimal.Parse(row.Cell(6).GetString().Replace("R$", "").Trim()),
-                            PaymentMethod = paymentMethod,
-                            Observation = row.Cell(8).GetString(),
-                            Status = status
-                        };
-
-                        await _ordersService.SaveItemAsync(order);
-                    }
-
-                   await Task.Run(async () => await LoadData());
-                }
+                filtered = filtered.Where(item => item.PaymentMethod == SelectedPaymentMethod);
             }
-            catch (Exception ex)
+
+            if (SelectedStatus != "Todos")
             {
-                throw new Exception("Erro ao importar arquivo Excel: " + ex.Message, ex);
+                filtered = filtered.Where(item => item.Status == SelectedStatus);
             }
+
+            var listToExport = filtered.OrderByDescending(x => x.Date).ToList();
+
+            await _xlsxService.ExportOrdersToXlsxAsync(orderItems: null, orderHistory: listToExport);
         }
+
 
         private async Task RegisterPayment(OrderHistory order)
         {
