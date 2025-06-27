@@ -71,6 +71,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Popups\ExportOptionsPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Popups\InstructionsPopup.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

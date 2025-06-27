@@ -192,31 +192,20 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
     {
         try
         {
-            string action = await DisplayActionSheet("📤 Como deseja exportar o relatório?", "❌ Cancelar", null,
-                                         "📊 Relatório em Planilha",
-                                         "📋 Copiar relatório em texto");
-
-
             var orders = await _ordersService.GetAllAsync();
             var products = await _productsService.GetAllAsync();
 
-            switch (action)
-            {
-                case "📊 Relatório em Planilha":
-                    await ExportXlsxAsync(orders);
-                    break;
-                case "📋 Copiar relatório em texto":
-                    await CopyReportTextAsync(orders, products);
-                    break;
-                case "❌ Cancelar":
-                default:
-                    break;
-            }
+            var popup = new ExportOptionsPopup(
+                orders,
+                products,
+                ExportXlsxAsync,
+                CopyReportTextAsync);
 
+            this.ShowPopup(popup);
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Erro", $"Erro ao exportar CSV: {ex.Message}", "OK");
+            await DisplayAlert("Erro", $"Erro ao exportar: {ex.Message}", "OK");
         }
     }
 

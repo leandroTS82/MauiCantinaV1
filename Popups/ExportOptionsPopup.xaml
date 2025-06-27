@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="CantinaV1.Popups.ExportOptionsPopup">
+    
+    <Frame Padding="20" CornerRadius="10" BackgroundColor="White">
+        <VerticalStackLayout Spacing="15">
+            <Label Text="📤 Como deseja exportar o relatório?" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
+
+            <Button Text="📊 Relatório em Planilha"
+                 Clicked="OnExportSpreadsheetClicked"
+                 BackgroundColor="#007aff"
+                 TextColor="White" />
+
+            <Button Text="📋 Copiar relatório em texto"
+                 Clicked="OnCopyTextClicked"
+                 BackgroundColor="#34c759"
+                 TextColor="White" />
+
+            <Button Text="❌ Cancelar"
+                 Clicked="OnCancelClicked"
+                 BackgroundColor="#ff3b30"
+                 TextColor="White" />
+        </VerticalStackLayout>
+    </Frame>
+
+</toolkit:Popup>

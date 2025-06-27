@@ -1,6 +1,8 @@
 ﻿using CantinaV1.Models;
+using CantinaV1.Popups;
 using CantinaV1.Services.Externals;
 using CantinaV1.Services.Internals;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -11,9 +13,10 @@ namespace CantinaV1.ViewModels
     {
         private readonly OrderHistoryService _ordersService = new OrderHistoryService();
         private readonly XlsxService _xlsxService = new();
+        private readonly CopyContentService _copyContentService = new CopyContentService();
 
         public IRelayCommand ImportXlsxCommand { get; }
-        public IRelayCommand ExportXlsxCommand { get; }
+        public ICommand ShowExportOptionsCommand { get; }
         public ICommand RegisterPaymentCommand { get; }
 
         private readonly OrderHistoryService _historyService;
@@ -68,10 +71,9 @@ namespace CantinaV1.ViewModels
                     await LoadData();
                 }
             }
-            ExportXlsxCommand = new RelayCommand(async () => await ExportXlsxAsync());
 
             RegisterPaymentCommand = new RelayCommand<OrderHistory>(async (order) => await RegisterPayment(order));
-
+            ShowExportOptionsCommand = new Command(async () => await ShowExportOptions());
             EndDate = DateTime.Now;
             StartDate = EndDate.AddMonths(-2);
             SelectedPaymentMethod = "Todos";
@@ -82,7 +84,8 @@ namespace CantinaV1.ViewModels
             Task.Run(async () => await LoadData());
         }
 
-        private async Task ExportXlsxAsync()
+
+        private async Task ShowExportOptions()
         {
             var allItems = await _historyService.GetAllAsync();
 
@@ -90,21 +93,20 @@ namespace CantinaV1.ViewModels
                 .Where(item => item.Date.Date >= StartDate.Date && item.Date.Date <= EndDate.Date);
 
             if (SelectedPaymentMethod != "Todos")
-            {
                 filtered = filtered.Where(item => item.PaymentMethod == SelectedPaymentMethod);
-            }
 
             if (SelectedStatus != "Todos")
-            {
                 filtered = filtered.Where(item => item.Status == SelectedStatus);
-            }
 
             var listToExport = filtered.OrderByDescending(x => x.Date).ToList();
 
-            await _xlsxService.ExportOrdersToXlsxAsync(orderItems: null, orderHistory: listToExport);
+            var popup = new ExportOptionsPopup(
+                listToExport,
+                async (history) => await _xlsxService.ExportOrdersToXlsxAsync(null, history),
+                async (history) => await _copyContentService.CopyOrderHistoryReportTextAsync(history));
+
+            Application.Current.MainPage.ShowPopup(popup);
         }
-
-
         private async Task RegisterPayment(OrderHistory order)
         {
             if (order.PaymentMethod == "Pagar depois" && order.Status == "Pendente")
@@ -163,12 +165,12 @@ namespace CantinaV1.ViewModels
     }
 
     public class OrderHistoryGroup : ObservableCollection<OrderHistory>
-    {
-        public string Date { get; set; }
+{
+    public string Date { get; set; }
 
-        public OrderHistoryGroup(string date, IEnumerable<OrderHistory> items) : base(items)
-        {
-            Date = date;
-        }
+    public OrderHistoryGroup(string date, IEnumerable<OrderHistory> items) : base(items)
+    {
+        Date = date;
     }
+}
 }

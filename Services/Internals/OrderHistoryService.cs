@@ -37,7 +37,7 @@ namespace CantinaV1.Services.Internals
                     Total = item.Total,
                     Status = status,
                     PaymentMethod = item.PaymentMethod,
-                    Observation = $"{item.OrderNotes} |Obs. Limpeza:{observation}"
+                    Observation = $"{item.OrderNotes} {observation}"
                 };
                 // Só define PaymentDate se não for "Pagar depois"
                 if (item.PaymentMethod != "Pagar depois")

@@ -7,7 +7,7 @@ $projectPath = "C:\dev\Android\MAUI\CantinaV1"
 $outputFile = Join-Path $projectPath "estrutura_simplificada.txt"
 
 # Pastas que quer listar na estrutura (pode ajustar)
-$foldersToList = @("Data", "Models", "Services", "Views", "ViewModels")
+$foldersToList = @("Data", "Models", "Popups","Services", "Views", "ViewModels")
 
 # Descrição para cada pasta (pode ajustar)
 $folderDescriptions = @{
