@@ -60,8 +60,10 @@
                             TextColor="#2C3E50"
                             Clicked="GoToConfigurationPage" />
                 </Frame>
-
-                <Frame CornerRadius="16" BackgroundColor="#F39C12" HasShadow="True" Padding="12">
+                <!-- 
+                Botões abaixo ficaram comentados para não aparecerem na tela principal, mas podem ser reativados se necessário
+                -->
+                    <!--<Frame CornerRadius="16" BackgroundColor="#F39C12" HasShadow="True" Padding="12">
                     <Button Text="📊 Histórico de Pedidos"
                             FontSize="22"
                             BackgroundColor="Transparent"
@@ -82,7 +84,7 @@
                             BackgroundColor="Transparent"
                             TextColor="White"
                             Clicked="GoToContactsPage" />
-                </Frame>
+                </Frame>-->
 
             </VerticalStackLayout>
 

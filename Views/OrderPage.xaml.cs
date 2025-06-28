@@ -155,24 +155,6 @@ public partial class OrderPage : ContentPage, INotifyPropertyChanged
 
     private async void OnClearAllOrdersClicked(object sender, EventArgs e)
     {
-        var popup = new HistoryPopup();
-        var result = await this.ShowPopupAsync(popup) as HistoryPopup;
-        if (result != null)
-        {
-            if (result.RegisterHistory)
-            {
-                List<OrderItem>? orderItems = await _ordersService.GetAllAsync();
-                if (orderItems.Count > 0)
-                {
-                    List<OrderHistory> OrderHistotyItems = _ordersHistoryService.ConvertOrderItemsToOrderHistoryItems(result.Observation, orderItems);
-                    foreach (var history in OrderHistotyItems)
-                    {
-                        await _ordersHistoryService.SaveItemAsync(history);
-                    }
-                }
-            }
-        }
-
         await _ordersService.DeleteAllAsync();
         await DisplayAlert("Sucesso", "Todos os pedidos foram excluídos.", "OK");
         // ação temporária
